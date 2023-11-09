@@ -1,0 +1,124 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+def _datos_regresion(X, Y):
+    n=X.shape[-1]
+    y_media = Y.mean()
+    x_media=[]
+    for i in range(n):
+        x=X.iloc[:, i]
+        x_media.append(x.mean())
+    b = []
+    b0 = y_media
+    
+    for i in range(n):
+        numerador = ((X.iloc[:, i] - x_media[i]) * (Y - y_media)).sum()
+        denominador = ((X.iloc[:, i] - x_media[i])**2).sum()
+        k = numerador / denominador
+        b.append(k)
+        b0 -= k * x_media[i]
+    b.append(b0)
+    return b
+
+def mostrar_regresion(X,Y):
+    b=_datos_regresion(X,Y)
+    n=len(b)
+    R_cuadrado=bondad_ajuste(X,Y)
+    print(f"\nCoeficiente de determinación o bondad del ajuste (R^2): {R_cuadrado}")
+    print(f'\nLos datos de la regresión son:\nb0='+str(b[-1]))
+    for i in range(n-1):
+        print('b'+str(i+1),f'={b[i]}')
+    
+def recta_regresion(X,Y,x_nuevo=None):
+
+    regresion=_datos_regresion(X,Y)
+    resultado=regresion[-1] #ordenada en el origen
+    x=x_nuevo if x_nuevo is not None else X
+    n=x.shape[-1]
+    for i in range(n):
+        resultado+=regresion[i]*x.iloc[:,i] 
+    return resultado
+
+def bondad_ajuste(X, Y):
+    recta = recta_regresion(X, Y)
+    SST = ((Y - Y.mean())**2).sum()
+    SSR = ((recta - Y.mean())**2).sum()
+    R_cuadrado = SSR / SST
+    return R_cuadrado
+
+'''def imprimir_datos2(X, Y, x_nombre, y_nombre, x_nuevo=None):
+    
+    n = X.shape[1]
+    
+    _, axes = plt.subplots(n, 1, figsize=(8, 6 * n))
+    if n == 1:
+        axes = [axes]  # Si solo hay una variable, conviértelo a una lista para evitar errores
+    
+    for i in range(n):
+        recta = recta_regresion(X, Y)
+        axes[i].scatter(X.iloc[:, i], Y, color='blue', label='Datos de entrenamiento', s=1)
+        axes[i].plot(X.iloc[:, i], recta, color='black', label='recta regresión', linewidth=1)
+        axes[i].set_xlabel(x_nombre + ' ' + str(i+1))
+        axes[i].set_ylabel(y_nombre)
+        axes[i].legend()
+
+    plt.tight_layout()
+    plt.show()'''
+'''
+def imprimir_datos(X,Y,x_nombre,y_nombre,x_nuevo=None):
+    recta=recta_regresion(X,Y)
+
+    
+    plt.scatter(X['X0'], Y, color='blue', label='Datos de entrenamiento',s=1)
+    plt.plot(X['X0'], recta, color='black', label='recta regresión',linewidth=1)
+    if x_nuevo is not None:
+        y_nuevo=recta_regresion(X,Y,x_nuevo)
+        plt.scatter(x_nuevo, y_nuevo, color='red', label='predicciones',s=20) 
+    plt.xlabel(x_nombre)
+    plt.ylabel(y_nombre)
+    plt.legend()
+    plt.show()
+'''
+'''def imprimir_datos2(X,Y,x_nombre,y_nombre,x_nuevo=None):    
+    n=X.shape[-1]
+    for i in range(n):
+        x=pd.DataFrame({'X': X.iloc[:,i]}) #x tiene que ser un dataframe, no dataseries
+        recta=recta_regresion(x,Y)
+        plt.scatter(X.iloc[:,i], Y, color='blue', label='Datos de entrenamiento',s=1)
+        plt.plot(X.iloc[:,i], recta, color='black', label='recta regresión',linewidth=1)
+        if x_nuevo is not None:
+            print(x_nuevo)
+            x_nuevo2=pd.DataFrame({'X':x_nuevo.iloc[:,i]})
+            y_nuevo=recta_regresion(x,Y,x_nuevo2)
+            plt.scatter(x_nuevo2, y_nuevo, color='red', label='predicciones',s=20) 
+        plt.xlabel(x_nombre)
+        plt.ylabel(y_nombre)
+        plt.legend()
+        plt.show()'''
+
+def imprimir_datos3(X, Y, x_nombre, y_nombre, x_nuevo=None):
+    n = X.shape[-1]
+    _, axes = plt.subplots(n, 1, figsize=(8, 6 * n))
+
+    for i in range(n):
+        x = pd.DataFrame({'X': X.iloc[:, i]})  # x tiene que ser un DataFrame, no DataSeries
+        recta = recta_regresion(x, Y)
+        axes[i].scatter(X.iloc[:, i], Y, color='blue', label=f'Datos de entrenamiento', s=1)
+        axes[i].plot(X.iloc[:, i], recta, color='black', label=f'Recta de Regresión', linewidth=1)
+
+        if x_nuevo is not None:
+            x_nuevo2 = pd.DataFrame({'X': x_nuevo.iloc[:, i]})
+            y_nuevo = recta_regresion(x, Y, x_nuevo2)
+            axes[i].scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20) 
+
+        axes[i].set_xlabel(x_nombre)
+        axes[i].set_ylabel(y_nombre)
+        axes[i].legend()
+
+    plt.tight_layout()
+    plt.show()
+
+    print('predicciones',recta_regresion(X,Y,x_nuevo))
+    
+    mostrar_regresion(X, Y)
+    imprimir_datos3(X, Y, 'x', 'y',x_nuevo)
