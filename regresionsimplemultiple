@@ -1,7 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def _datos_regresion(X, Y):
+def datos_regresion(X, Y):
     n=X.shape[-1]
     y_media = Y.mean()
     x_media=[]
@@ -21,7 +21,7 @@ def _datos_regresion(X, Y):
     return b
 
 def mostrar_regresion(X,Y):
-    b=_datos_regresion(X,Y)
+    b=datos_regresion(X,Y)
     n=len(b)
     R_cuadrado=bondad_ajuste(X,Y)
     print(f"\nCoeficiente de determinación o bondad del ajuste (R^2): {R_cuadrado}")
@@ -30,8 +30,7 @@ def mostrar_regresion(X,Y):
         print('b'+str(i+1),f'={b[i]}')
     
 def recta_regresion(X,Y,x_nuevo=None):
-
-    regresion=_datos_regresion(X,Y)
+    regresion=datos_regresion(X,Y)
     resultado=regresion[-1] #ordenada en el origen
     x=x_nuevo if x_nuevo is not None else X
     n=x.shape[-1]
@@ -67,8 +66,3 @@ def imprimir_datos(X, Y, x_nombre, y_nombre, x_nuevo=None):
 
     plt.tight_layout()
     plt.show()
-
-    print('predicciones',recta_regresion(X,Y,x_nuevo))
-    
-    mostrar_regresion(X, Y)
-    imprimir_datos(X, Y, 'x', 'y',x_nuevo)
