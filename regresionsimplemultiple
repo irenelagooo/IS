@@ -46,56 +46,6 @@ def bondad_ajuste(X, Y):
     R_cuadrado = SSR / SST
     return R_cuadrado
 
-'''def imprimir_datos2(X, Y, x_nombre, y_nombre, x_nuevo=None):
-    
-    n = X.shape[1]
-    
-    _, axes = plt.subplots(n, 1, figsize=(8, 6 * n))
-    if n == 1:
-        axes = [axes]  # Si solo hay una variable, conviértelo a una lista para evitar errores
-    
-    for i in range(n):
-        recta = recta_regresion(X, Y)
-        axes[i].scatter(X.iloc[:, i], Y, color='blue', label='Datos de entrenamiento', s=1)
-        axes[i].plot(X.iloc[:, i], recta, color='black', label='recta regresión', linewidth=1)
-        axes[i].set_xlabel(x_nombre + ' ' + str(i+1))
-        axes[i].set_ylabel(y_nombre)
-        axes[i].legend()
-
-    plt.tight_layout()
-    plt.show()'''
-'''
-def imprimir_datos(X,Y,x_nombre,y_nombre,x_nuevo=None):
-    recta=recta_regresion(X,Y)
-
-    
-    plt.scatter(X['X0'], Y, color='blue', label='Datos de entrenamiento',s=1)
-    plt.plot(X['X0'], recta, color='black', label='recta regresión',linewidth=1)
-    if x_nuevo is not None:
-        y_nuevo=recta_regresion(X,Y,x_nuevo)
-        plt.scatter(x_nuevo, y_nuevo, color='red', label='predicciones',s=20) 
-    plt.xlabel(x_nombre)
-    plt.ylabel(y_nombre)
-    plt.legend()
-    plt.show()
-'''
-'''def imprimir_datos2(X,Y,x_nombre,y_nombre,x_nuevo=None):    
-    n=X.shape[-1]
-    for i in range(n):
-        x=pd.DataFrame({'X': X.iloc[:,i]}) #x tiene que ser un dataframe, no dataseries
-        recta=recta_regresion(x,Y)
-        plt.scatter(X.iloc[:,i], Y, color='blue', label='Datos de entrenamiento',s=1)
-        plt.plot(X.iloc[:,i], recta, color='black', label='recta regresión',linewidth=1)
-        if x_nuevo is not None:
-            print(x_nuevo)
-            x_nuevo2=pd.DataFrame({'X':x_nuevo.iloc[:,i]})
-            y_nuevo=recta_regresion(x,Y,x_nuevo2)
-            plt.scatter(x_nuevo2, y_nuevo, color='red', label='predicciones',s=20) 
-        plt.xlabel(x_nombre)
-        plt.ylabel(y_nombre)
-        plt.legend()
-        plt.show()'''
-
 def imprimir_datos3(X, Y, x_nombre, y_nombre, x_nuevo=None):
     n = X.shape[-1]
     _, axes = plt.subplots(n, 1, figsize=(8, 6 * n))
