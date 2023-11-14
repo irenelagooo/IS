@@ -46,7 +46,7 @@ def bondad_ajuste(X, Y):
     return R_cuadrado
 
 def imprimir_datos(X, Y, x_nombre, y_nombre, x_nuevo=None):
-    n = X.shape[-1]
+    n = X.shape[1]
     _, axes = plt.subplots(n, 1, figsize=(8, 6 * n))
 
     for i in range(n):
@@ -60,7 +60,7 @@ def imprimir_datos(X, Y, x_nombre, y_nombre, x_nuevo=None):
             y_nuevo = recta_regresion(x, Y, x_nuevo2)
             axes[i].scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20) 
 
-        axes[i].set_xlabel(x_nombre)
+        axes[i].set_xlabel(x_nombre[i])
         axes[i].set_ylabel(y_nombre)
         axes[i].legend()
 

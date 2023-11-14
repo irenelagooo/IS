@@ -4,18 +4,9 @@ from tkinter import filedialog
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
-
-def calcular_regresion(X, Y):
-    x_media = X.mean()
-    y_media = Y.mean()
-    x_dif = X - x_media
-    y_dif = Y - y_media
-    m = (x_dif * y_dif).sum() / (x_dif ** 2).sum()
-    n = y_media - m * x_media
-    return m, n
+from regresionsimplemultiple import *
 
 def guardar_regresion(X,Y):
-    
     pass
         
 def borrar_grafica():
@@ -34,29 +25,30 @@ def calcular_regresion_click():
         resultado_label.config(text="Error: Debes seleccionar al menos una variable X e Y")
         return
 
-    seleccion_x = x_seleccionadas[0]
+    x=pd.DataFrame()
+    #seleccion_x = x_seleccionadas[0]
     seleccion_y = y_seleccionadas[0]
-
-    x = mis_datos[seleccion_x]
+    for i in range(len(x_seleccionadas)):
+        nombre_variable=x_seleccionadas[i]
+        x[nombre_variable]=mis_datos[nombre_variable]
+    #x = mis_datos[seleccion_x]
     y = mis_datos[seleccion_y]
 
     variables_no_numericas = []
-
-    if not pd.to_numeric(x, errors='coerce').notna().all():
-        variables_no_numericas.append(seleccion_x)
+    for i in range(x.shape[1]):
+        if not pd.to_numeric(x.iloc[:,i], errors='coerce').notna().all():
+            variables_no_numericas.append(x_seleccionadas[i])
     if not pd.to_numeric(y, errors='coerce').notna().all():
           variables_no_numericas.append(seleccion_y)
 
-    m, b = calcular_regresion(x, y)
+    l = datos_regresion(x, y)
+    n=round(l[-1],3)
+    m=[round(i,3) for i in l[:-1]]
 
-    resultado_label.config(text=f"Pendiente (m): {m}, Ordenada al origen (b): {b}")
+    R=round(bondad_ajuste(x,y),3)
+    resultado_label.config(text=f"Pendiente: {m}, Ordenada en el origen: {n}, Bondad del ajuste: {R}")
 
-
-    plt.scatter(x, y, label='Datos')
-    plt.plot(x, [m * xi + b for xi in x], label='Regresión', color='red')
-    plt.xlabel(seleccion_x)
-    plt.ylabel(seleccion_y)
-    plt.legend()
+    imprimir_datos(x,y,x_seleccionadas,seleccion_y)
 
     canvas = FigureCanvasTkAgg(plt.gcf(), master=canvas_frame)
     canvas_widget = canvas.get_tk_widget()
@@ -133,7 +125,6 @@ def seleccionar_variable_y(col):
     variables_y[col].set(True)
 
 
-
 window = tk.Tk()
 window.title("Calculadora de Regresión")
 mis_datos = None  
@@ -157,7 +148,7 @@ variables_frame_y.grid(row=0, column=1, rowspan=5, sticky="nsew", padx=10)  # Ag
 variable_x_label = ttk.Label(variables_frame_x, text="Selecciona Variable(s) X:")
 variable_x_label.grid(row=0, column=0, sticky="w")
 
-variable_y_label = ttk.Label(variables_frame_y, text="Selecciona Variable(s) Y:")
+variable_y_label = ttk.Label(variables_frame_y, text="Selecciona Variable Y:")
 variable_y_label.grid(row=0, column=0, sticky="w")
 
 resultado_label = ttk.Label(window, text="")
