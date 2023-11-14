@@ -48,7 +48,7 @@ def bondad_ajuste(X, Y):
 def imprimir_datos(X, Y, x_nombre, y_nombre, x_nuevo=None):
     n = X.shape[1]
     _, axes = plt.subplots(n, 1, figsize=(8, 6 * n))
-
+    
     for i in range(n):
         x = pd.DataFrame({'X': X.iloc[:, i]})  # x tiene que ser un DataFrame, no DataSeries
         recta = recta_regresion(x, Y)
