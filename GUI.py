@@ -71,6 +71,21 @@ def calcular_regresion_click():
     etiqueta_prediccion = ttk.Label(window, text="Ingrese el valor de X para la predicción:")
     etiqueta_prediccion.grid(row=1, column=2, sticky="nsew")
 
+    '''etiquetas_prediccion = []
+    entradas_prediccion = []
+
+    for i, var in enumerate(x.columns):
+        etiqueta_var = ttk.Label(window, text=f"{var}:")
+        etiqueta_var.grid(row=i + 3, column=2, sticky="nsew")
+        etiquetas_prediccion.append(etiqueta_var)
+
+        entry_var = ttk.Entry(window)
+        entry_var.grid(row=i + 3, column=3, sticky="nsew")
+        entradas_prediccion.append(entry_var)
+
+    calcular_button = ttk.Button(window, text="Calcular Regresión", command=lambda: calcular_regresion_click(variables_frame_x, variables_frame_y, variables_x, mis_datos, resultado_label, canvas_frame, window, entradas_prediccion))
+    calcular_button.grid(row=2, columnspan=2, sticky="nsew")'''
+
 def obtener_datos(path):
     extension = path.split('.')[-1]
     if extension == 'csv':
