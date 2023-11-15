@@ -63,7 +63,6 @@ def imprimir_datos(X, Y, x_nombre, y_nombre, x_nuevo=None):
         plt.legend()
         plt.show()
     else:
-        n = X.shape[1]
         _, axes = plt.subplots(n, 1, figsize=(8, 6 * n))
         
         for i in range(n):
