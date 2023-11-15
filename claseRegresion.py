@@ -11,10 +11,10 @@ class Regresion:
 
     def __repr__(self) -> str:
         x=0
-        xd=str(self.n)
+        xd=f'{self.n:.3f}'
         for i in self.m:
             x+=1
-            xd+='+'+str(i)+'x'+str(x)
+            xd+=f'+{i:.3f}x{x:.3f}'
         return f"\nrecta: y={xd}, bondad_del_ajuste: {self.bondad_del_ajuste}"
         #serializar objeto (guardar y recuperar)
 
