@@ -33,7 +33,7 @@ def recta_regresion(X,Y,x_nuevo=None):
     regresion=datos_regresion(X,Y)
     resultado=regresion[-1] #ordenada en el origen
     x=x_nuevo if x_nuevo is not None else X
-    n=x.shape[-1]
+    n=x.shape[1]
     for i in range(n):
         resultado+=regresion[i]*x.iloc[:,i] 
     return resultado
@@ -53,6 +53,12 @@ def formula_recta(m,n):
         x+=1
         r+=f'{s}{i:.3f}x{x}'
     return f"y={r}"
+
+def predicciones_modelo_cargado(m, n, x):
+    y=n
+    for i in m:
+        y+=i*x
+    return y
 
 def imprimir_datos(X, Y, x_nuevo=None):
     n=X.shape[1]

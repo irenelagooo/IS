@@ -8,13 +8,13 @@ from claseRegresion import Regresion
 import pickle
 from carga_guardado import *
 
-def borrar_grafica():
+'''def borrar_grafica():
     # Verifica si hay un lienzo y lo destruye
     if hasattr(window, 'canvas'):
-        window.canvas.get_tk_widget().destroy()
+        window.canvas.get_tk_widget().destroy()'''
 
 def calcular_regresion_click():
-    borrar_grafica()
+    #borrar_grafica()
     plt.clf()
     # Obtiene los nombres de las variables seleccionadas
     x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
@@ -104,7 +104,7 @@ def obtener_datos(path):
     return df
 
 def cargar_archivo():
-    borrar_grafica()
+   # borrar_grafica()
 
     archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx")])
     if archivo:
@@ -176,16 +176,17 @@ window.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
 
 # Contenedores para las variables
 variables_frame_x = ttk.Frame(window)
-variables_frame_x.grid(row=0, column=0, rowspan=5, sticky="nsew", padx=10)  # Agregado padx para espacio vertical
+variables_frame_x.grid(row=0, column=0, rowspan=5, sticky="nsew", padx=10,pady=10)  
 
 variables_frame_y = ttk.Frame(window)
-variables_frame_y.grid(row=0, column=1, rowspan=5, sticky="nsew", padx=10)  # Agregado padx para espacio vertical
+variables_frame_y.grid(row=0, column=1, rowspan=5, sticky="nsew", padx=10,pady=10)  
 
 variable_x_label = ttk.Label(variables_frame_x, text="Selecciona Variable(s) X:")
 variable_x_label.grid(row=0, column=0, sticky="w")
 
 variable_y_label = ttk.Label(variables_frame_y, text="Selecciona Variable Y:")
 variable_y_label.grid(row=0, column=0, sticky="w")
+
 
 resultado_label = ttk.Label(window, text="")
 resultado_label.grid(row=3, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
