@@ -55,11 +55,12 @@ def calcular_regresion_click():
           variables_no_numericas.append(seleccion_y)
 
     l = datos_regresion(x, y)
-    n=round(l[-1],3)
-    m=[round(i,3) for i in l[:-1]]
+    n=l[-1]
+    m=l[:-1]
 
-    R=round(bondad_ajuste(x,y),3)
-    resultado_label.config(text=f"Pendiente: {m}, Ordenada en el origen: {n}, Bondad del ajuste: {R}")
+    R=bondad_ajuste(x,y)
+    r=formula_recta(m,n)
+    resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
 
     '''    # Crea la gráfica de dispersión
     plt.scatter(x.iloc[:, 0], y, color='blue', label='Datos de entrenamiento', s=1)
@@ -70,7 +71,7 @@ def calcular_regresion_click():
     # Muestra la gráfica
     plt.tight_layout()
     plt.show()'''
-    imprimir_datos(x,y,x_seleccionadas,seleccion_y)
+    imprimir_datos(x,y)
 
 
     canvas = FigureCanvasTkAgg(plt.gcf(), master=canvas_frame)

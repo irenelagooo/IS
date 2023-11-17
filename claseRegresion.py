@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import pickle
+from regresionsimplemultiple import formula_recta
 
 @dataclass
 class Regresion:
@@ -10,12 +11,8 @@ class Regresion:
     bondad_del_ajuste:float
 
     def __repr__(self) -> str:
-        x=0
-        xd=f'{self.n:.3f}'
-        for i in self.m:
-            x+=1
-            xd+=f'+{i:.3f}x{x}'
-        return f"\nrecta: y={xd}, bondad_del_ajuste: {self.bondad_del_ajuste}"
+        
+        return f"\nrecta: {formula_recta(self.m,self.n)}, bondad_del_ajuste: {self.bondad_del_ajuste}"
         #serializar objeto (guardar y recuperar)
 
 if __name__=='__main__':

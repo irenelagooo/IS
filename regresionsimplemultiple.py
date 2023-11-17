@@ -45,7 +45,16 @@ def bondad_ajuste(X, Y):
     R_cuadrado = SSR / SST
     return R_cuadrado
 
-def imprimir_datos(X, Y, x_nombre, y_nombre, x_nuevo=None):
+def formula_recta(m,n):
+    x=0
+    r=f'{n:.3f}'
+    for i in m:
+        s='+' if i>=0 else ''
+        x+=1
+        r+=f'{s}{i:.3f}x{x}'
+    return f"y={r}"
+
+def imprimir_datos(X, Y, x_nuevo=None):
     n=X.shape[1]
     if n==1:
         x = pd.DataFrame({'X': X.iloc[:, 0]})
@@ -58,8 +67,8 @@ def imprimir_datos(X, Y, x_nombre, y_nombre, x_nuevo=None):
             y_nuevo = recta_regresion(x, Y, x_nuevo2)
             plt.scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20) 
 
-        plt.xlabel(x_nombre[0])
-        plt.ylabel(y_nombre)
+        plt.xlabel(X.columns[0])
+        plt.ylabel(Y.name)
         plt.legend()
         plt.show()
     else:
@@ -76,8 +85,8 @@ def imprimir_datos(X, Y, x_nombre, y_nombre, x_nuevo=None):
                 y_nuevo = recta_regresion(x, Y, x_nuevo2)
                 axes[i].scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20) 
 
-            axes[i].set_xlabel(x_nombre[i])
-            axes[i].set_ylabel(y_nombre)
+            axes[i].set_xlabel(X.columns[i])
+            axes[i].set_ylabel(Y.name)
             axes[i].legend()
 
         plt.tight_layout()

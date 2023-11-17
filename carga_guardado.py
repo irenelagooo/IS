@@ -89,7 +89,7 @@ def datos_grafica(df):
     else: #elif respuesta==0:???????
         x_nuevo=None
 
-    imprimir_datos(X,Y,nombre_x,nombre_y,x_nuevo)
+    imprimir_datos(X,Y,x_nuevo)
     plt.show()
 
     guardar = int(input('Desea guardar los datos de la regresión? Sí=1 No=0\n'))
