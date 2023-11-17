@@ -8,19 +8,6 @@ from claseRegresion import Regresion
 import pickle
 from carga_guardado import *
 
-
-'''def guardar_regresion(X,Y):
-    
-    texto = simpledialog.askstring("Descripción", "Ingrese un texto que desee guardar con los datos de la regresión:")
-    m,n=datos_regresion(X,Y)
-    bondad=bondad_ajuste(X,Y)
-    regresion=Regresion(m,n,texto,bondad)
-    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
-    
-    if archivo:
-        with open(archivo, 'a') as archivo_guardar:
-            archivo_guardar.write(str(regresion))'''
-
 def borrar_grafica():
     # Verifica si hay un lienzo y lo destruye
     if hasattr(window, 'canvas'):
@@ -61,16 +48,6 @@ def calcular_regresion_click():
     R=bondad_ajuste(x,y)
     r=formula_recta(m,n)
     resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
-
-    '''    # Crea la gráfica de dispersión
-    plt.scatter(x.iloc[:, 0], y, color='blue', label='Datos de entrenamiento', s=1)
-    plt.xlabel(x_seleccionadas[0])
-    plt.ylabel(seleccion_y)
-    plt.legend()
-
-    # Muestra la gráfica
-    plt.tight_layout()
-    plt.show()'''
     imprimir_datos(x,y)
 
 
