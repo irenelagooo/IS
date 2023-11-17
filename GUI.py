@@ -1,14 +1,26 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import filedialog 
+from tkinter import ttk, Scrollbar, filedialog, simpledialog
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 from regresionsimplemultiple import *
+from claseRegresion import Regresion
+import pickle
+from carga_guardado import *
 
-def guardar_regresion(X,Y):
-    pass
-        
+
+'''def guardar_regresion(X,Y):
+    
+    texto = simpledialog.askstring("Descripción", "Ingrese un texto que desee guardar con los datos de la regresión:")
+    m,n=datos_regresion(X,Y)
+    bondad=bondad_ajuste(X,Y)
+    regresion=Regresion(m,n,texto,bondad)
+    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    
+    if archivo:
+        with open(archivo, 'a') as archivo_guardar:
+            archivo_guardar.write(str(regresion))'''
+
 def borrar_grafica():
     # Verifica si hay un lienzo y lo destruye
     if hasattr(window, 'canvas'):
@@ -26,6 +38,7 @@ def calcular_regresion_click():
         return
 
     x=pd.DataFrame()
+    
     #seleccion_x = x_seleccionadas[0]
     seleccion_y = y_seleccionadas[0]
     for i in range(len(x_seleccionadas)):
@@ -48,7 +61,17 @@ def calcular_regresion_click():
     R=round(bondad_ajuste(x,y),3)
     resultado_label.config(text=f"Pendiente: {m}, Ordenada en el origen: {n}, Bondad del ajuste: {R}")
 
+    '''    # Crea la gráfica de dispersión
+    plt.scatter(x.iloc[:, 0], y, color='blue', label='Datos de entrenamiento', s=1)
+    plt.xlabel(x_seleccionadas[0])
+    plt.ylabel(seleccion_y)
+    plt.legend()
+
+    # Muestra la gráfica
+    plt.tight_layout()
+    plt.show()'''
     imprimir_datos(x,y,x_seleccionadas,seleccion_y)
+
 
     canvas = FigureCanvasTkAgg(plt.gcf(), master=canvas_frame)
     canvas_widget = canvas.get_tk_widget()
@@ -85,11 +108,19 @@ def calcular_regresion_click():
 
     calcular_button = ttk.Button(window, text="Calcular Regresión", command=lambda: calcular_regresion_click(variables_frame_x, variables_frame_y, variables_x, mis_datos, resultado_label, canvas_frame, window, entradas_prediccion))
     calcular_button.grid(row=2, columnspan=2, sticky="nsew")'''
+    def llamar_guardar_regresion():
+        if 'x' in locals() and 'y' in locals():
+            guardar_regresion(x, y)
+        else:
+            resultado_label.config(text="Error: Debes calcular la regresión primero")
+
+    descargar_modelo_button = ttk.Button(window, text="Descargar Modelo", command=llamar_guardar_regresion)
+    descargar_modelo_button.grid(row=4, column=2, sticky="nsew")
 
 def obtener_datos(path):
     extension = path.split('.')[-1]
     if extension == 'csv':
-        df = pd.read_csv(path, delimiter=';') 
+        df = pd.read_csv(path, delimiter=',') 
     elif extension == 'xlsx':
         df = pd.read_excel(path)
     return df
@@ -97,7 +128,7 @@ def obtener_datos(path):
 def cargar_archivo():
     borrar_grafica()
 
-    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", "*.csv"), ("Excel Files", "*.xlsx")])
+    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx")])
     if archivo:
         ruta_label.config(text=f"Ruta del archivo: {archivo}")
         cargar_datos(archivo)
@@ -139,6 +170,18 @@ def seleccionar_variable_y(col):
     variable_y_seleccionada = col
     variables_y[col].set(True)
 
+def cargar_modelo():
+    #archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    archivo = filedialog.askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    if archivo:
+        with open(archivo, 'rb') as archivo:
+            try:
+                
+                regresion = pickle.load(archivo)
+                resultado_label.config(text=regresion)
+            except EOFError:
+                resultado_label.config(text="Objeto no encontrado en el archivo.")
+    #return regresion
 
 window = tk.Tk()
 window.title("Calculadora de Regresión")
@@ -174,6 +217,11 @@ ruta_label.grid(row=6, columnspan=2, sticky="nsew")  # sticky para expandir en t
 
 cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=cargar_archivo)
 cargar_archivo_button.grid(row=5, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=cargar_archivo)
+cargar_archivo_button.grid(row=5, column=0, sticky="nsew")  # sticky for expanding in all directions
+
+cargar_modelo_button = ttk.Button(window, text="Cargar Modelo", command=cargar_modelo)
+cargar_modelo_button.grid(row=5, column=1, sticky="nsew")  # sticky for expanding in all directions
 
 calcular_button = ttk.Button(window, text="Calcular Regresión", command=calcular_regresion_click)
 calcular_button.grid(row=2, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
@@ -191,4 +239,3 @@ window.grid_rowconfigure(3, weight=1)
 window.grid_rowconfigure(5, weight=1)
 
 window.mainloop()
-

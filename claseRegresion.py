@@ -14,7 +14,7 @@ class Regresion:
         xd=f'{self.n:.3f}'
         for i in self.m:
             x+=1
-            xd+=f'+{i:.3f}x{x:.3f}'
+            xd+=f'+{i:.3f}x{x}'
         return f"\nrecta: y={xd}, bondad_del_ajuste: {self.bondad_del_ajuste}"
         #serializar objeto (guardar y recuperar)
 

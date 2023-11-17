@@ -5,6 +5,8 @@ import sqlite3
 from claseRegresion import Regresion
 import matplotlib.pyplot as plt
 import pickle
+import tkinter as tk
+from tkinter import ttk, Scrollbar, filedialog, simpledialog
 
 def leer_archivos(path):
     '''
@@ -99,7 +101,7 @@ def datos_grafica(df):
         regresion=cargar_regresion()
         print(f'La regresión cargada es la siguiente: {regresion}')
 
-def guardar_regresion(X,Y):
+'''def guardar_regresion(X,Y):
     
     texto=str(input('Introduzca un texto que desee que se guarde con los datos de la regresión\n'))
     b=datos_regresion(X,Y)
@@ -109,16 +111,41 @@ def guardar_regresion(X,Y):
     regresion=Regresion(m,n,texto,bondad)
     archivo=str(input('Ingrese la ruta completa del archivo en el que desea guardar los datos\n'))
     with open(archivo,'wb') as archivo:
-        pickle.dump(regresion,archivo)
+        pickle.dump(regresion,archivo)'''
+def guardar_regresion(X,Y):
+    
+    texto = simpledialog.askstring("Descripción", "Ingrese un texto que desee guardar con los datos de la regresión:")
+    b=datos_regresion(X,Y)
+    m=b[:-1]
+    n=b[-1]
+    bondad=bondad_ajuste(X,Y)
+    regresion=Regresion(m,n,texto,bondad)
+    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    
+    if archivo:
+        with open(archivo,'wb') as archivo:
+            pickle.dump(regresion,archivo)
 
 #buscar contiene el nombre de la regresió que se desea cargar
-def cargar_regresion():
+'''def cargar_regresion():
     archivo=str(input('Ingrese la ruta completa del archivo en el que desea cargar los datos\n'))
     with open(archivo, 'rb') as archivo:
         try:
             regresion = pickle.load(archivo)
         except EOFError:
             print("Objeto no encontrado en el archivo.")
+    return regresion'''
+
+def cargar_regresion():
+    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    if archivo:
+        with open(archivo, 'rb') as archivo:
+            try:
+                
+                regresion = pickle.load(archivo)
+            except EOFError:
+                print("Objeto no encontrado en el archivo.")
+        
     return regresion
 
 if __name__=='__main__':
