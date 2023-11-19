@@ -20,8 +20,8 @@ def calcular_regresion_click():
     
     #seleccion_x = x_seleccionadas[0]
     seleccion_y = y_seleccionadas[0]
-    for i in range(len(x_seleccionadas)):
-        nombre_variable=x_seleccionadas[i]
+    for i in x_seleccionadas:
+        nombre_variable=i
         x[nombre_variable]=mis_datos[nombre_variable]
     #x = mis_datos[seleccion_x]
     y = mis_datos[seleccion_y]
@@ -47,8 +47,8 @@ def calcular_regresion_click():
     canvas_widget = canvas.get_tk_widget()
     canvas_widget.grid(row=0, columnspan=2, sticky="nsew") 
     window.canvas = canvas 
-    descargar_modelo_button = ttk.Button(window, text="Descargar Modelo", command=guardar_regresion)
-    descargar_modelo_button.grid(row=4, column=2, sticky="nsew") 
+    '''descargar_modelo_button = ttk.Button(window, text="Descargar Modelo", command=guardar_regresion)
+    descargar_modelo_button.grid(row=4, column=2, sticky="nsew")''' 
 
     # Ajusta las columnas y filas para expandirse
     window.grid_columnconfigure(0, weight=1)
@@ -64,13 +64,13 @@ def calcular_regresion_click():
     etiqueta_prediccion = ttk.Label(window, text="Ingrese el valor de X para la predicción:")
     etiqueta_prediccion.grid(row=1, column=2, sticky="nsew")
 
-    def llamar_guardar_regresion():
+    '''def llamar_guardar_regresion():
         if 'x' in locals() and 'y' in locals():
             guardar_regresion(x, y)
         else:
-            resultado_label.config(text="Error: Debes calcular la regresión primero")
+            resultado_label.config(text="Error: Debes calcular la regresión primero")'''
 
-    descargar_modelo_button = ttk.Button(window, text="Descargar Modelo", command=llamar_guardar_regresion)
+    descargar_modelo_button = ttk.Button(window, text="Descargar Modelo", command=lambda: guardar_regresion(x,y))
     descargar_modelo_button.grid(row=4, column=2, sticky="nsew")
 
 def obtener_datos(path):
@@ -95,7 +95,7 @@ def cargar_datos(archivo):
 
     variables_x = {col: tk.BooleanVar(value=False) for col in columnas_numericas}
     variables_y = {col: tk.BooleanVar(value=False) for col in columnas_numericas}
-    variable_y_seleccionada = None  # Variable para almacenar la variable Y seleccionada
+    #variable_y_seleccionada = None  # Variable para almacenar la variable Y seleccionada
 
     for i, col in enumerate(columnas_numericas):
         checkbutton_x = ttk.Checkbutton(variables_frame_x, text=col, variable=variables_x[col])
@@ -103,18 +103,6 @@ def cargar_datos(archivo):
 
         checkbutton_y = ttk.Checkbutton(variables_frame_y, text=col, variable=variables_y[col], command=lambda col=col: seleccionar_variable_y(col))
         checkbutton_y.grid(row=i, column=0, sticky="w")
-
-    columnas_no_numericas = mis_datos.select_dtypes(exclude='number').columns.tolist()
-
-    # Solo agregar casillas de verificación para columnas numéricas
-    for i, col in enumerate(columnas_no_numericas):
-        if col in variables_x:
-            checkbutton_x = ttk.Checkbutton(variables_frame_x, text=col, variable=variables_x[col], state='disabled')
-            checkbutton_x.grid(row=i+len(columnas_numericas), column=0, sticky="w")
-
-        if col in variables_y:
-            checkbutton_y = ttk.Checkbutton(variables_frame_y, text=col, variable=variables_y[col], state='disabled')
-            checkbutton_y.grid(row=i+len(columnas_numericas), column=0, sticky="w")
 
 def seleccionar_variable_y(col):
     global variable_y_seleccionada
