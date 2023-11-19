@@ -8,21 +8,13 @@ from claseRegresion import Regresion
 import pickle
 from carga_guardado import *
 
-'''def borrar_grafica():
-    # Verifica si hay un lienzo y lo destruye
-    if hasattr(window, 'canvas'):
-        window.canvas.get_tk_widget().destroy()'''
-
 def calcular_regresion_click():
-    #borrar_grafica()
-    plt.clf()
     # Obtiene los nombres de las variables seleccionadas
     x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
     y_seleccionadas = [col for col, var in variables_y.items() if var.get()]
 
     if not x_seleccionadas or not y_seleccionadas:
         resultado_label.config(text="Error: Debes seleccionar al menos una variable X e Y")
-        return
 
     x=pd.DataFrame()
     
@@ -72,20 +64,6 @@ def calcular_regresion_click():
     etiqueta_prediccion = ttk.Label(window, text="Ingrese el valor de X para la predicción:")
     etiqueta_prediccion.grid(row=1, column=2, sticky="nsew")
 
-    '''etiquetas_prediccion = []
-    entradas_prediccion = []
-
-    for i, var in enumerate(x.columns):
-        etiqueta_var = ttk.Label(window, text=f"{var}:")
-        etiqueta_var.grid(row=i + 3, column=2, sticky="nsew")
-        etiquetas_prediccion.append(etiqueta_var)
-
-        entry_var = ttk.Entry(window)
-        entry_var.grid(row=i + 3, column=3, sticky="nsew")
-        entradas_prediccion.append(entry_var)
-
-    calcular_button = ttk.Button(window, text="Calcular Regresión", command=lambda: calcular_regresion_click(variables_frame_x, variables_frame_y, variables_x, mis_datos, resultado_label, canvas_frame, window, entradas_prediccion))
-    calcular_button.grid(row=2, columnspan=2, sticky="nsew")'''
     def llamar_guardar_regresion():
         if 'x' in locals() and 'y' in locals():
             guardar_regresion(x, y)
@@ -104,8 +82,6 @@ def obtener_datos(path):
     return df
 
 def cargar_archivo():
-   # borrar_grafica()
-
     archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx")])
     if archivo:
         ruta_label.config(text=f"Ruta del archivo: {archivo}")
