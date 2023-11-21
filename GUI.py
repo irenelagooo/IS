@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 from regresionsimplemultiple import *
-from claseRegresion import Regresion
+#from claseRegresion import Regresion
 import pickle
 from carga_guardado import *
 
@@ -51,13 +51,13 @@ def calcular_regresion_click():
     descargar_modelo_button.grid(row=4, column=2, sticky="nsew")''' 
 
     # Ajusta las columnas y filas para expandirse
-    window.grid_columnconfigure(0, weight=1)
+    '''window.grid_columnconfigure(0, weight=1)
     window.grid_columnconfigure(1, weight=1)
     window.grid_columnconfigure(2, weight=1)
     window.grid_rowconfigure(0, weight=1)
     window.grid_rowconfigure(1, weight=1)
     window.grid_rowconfigure(3, weight=1)
-    window.grid_rowconfigure(5, weight=1)
+    window.grid_rowconfigure(5, weight=1)'''
     
     entrada_prediccion = ttk.Entry(window)
     entrada_prediccion.grid(row=2, column=2, sticky="nsew")
@@ -73,23 +73,23 @@ def calcular_regresion_click():
     descargar_modelo_button = ttk.Button(window, text="Descargar Modelo", command=lambda: guardar_regresion(x,y))
     descargar_modelo_button.grid(row=4, column=2, sticky="nsew")
 
-def obtener_datos(path):
+'''def obtener_datos(path):
     extension = path.split('.')[-1]
     if extension == 'csv':
         df = pd.read_csv(path, delimiter=',') 
     elif extension == 'xlsx':
         df = pd.read_excel(path)
-    return df
+    return df'''
 
 def cargar_archivo(ruta_label):
-    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx")])
+    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx"),("DataBase Files",".db")])
     if archivo:
         ruta_label.config(text=f"Ruta del archivo: {archivo}")
         cargar_datos(archivo,variables_frame_x,variables_frame_y)
 
 def cargar_datos(archivo,variables_frame_x,variables_frame_y):
     global mis_datos, variable_y_seleccionada, variables_x, variables_y
-    mis_datos = obtener_datos(archivo)
+    mis_datos = leer_archivos(archivo)
 
     columnas_numericas = mis_datos.select_dtypes(include='number').columns.tolist()
 
@@ -158,6 +158,36 @@ def texto_label_ruta():
     ruta_label = ttk.Label(window, text="Ruta del archivo: ")
     ruta_label.grid(row=6, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
     return ruta_label
+
+def botones(window):
+    cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=lambda: cargar_archivo(ruta_label))
+    cargar_archivo_button.grid(row=5, column=0, sticky="nsew")  # sticky for expanding in all directions
+
+    cargar_modelo_button = ttk.Button(window, text="Cargar Modelo", command=cargar_modelo)
+    cargar_modelo_button.grid(row=5, column=1, sticky="nsew")  # sticky for expanding in all directions
+
+    calcular_button = ttk.Button(window, text="Calcular Regresión", command=calcular_regresion_click)
+    calcular_button.grid(row=2, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+
+def espacio_grafica(window):
+    # Marco para el gráfico
+    canvas_frame = ttk.Frame(window)
+    canvas_frame.grid(row=4, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+    return canvas_frame
+
+def definir_label(window):
+    resultado_label = ttk.Label(window, text="")
+    resultado_label.grid(row=3, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+    return resultado_label
+
+def ajusta_ventana(window):
+    window.grid_columnconfigure(0, weight=1)
+    window.grid_columnconfigure(1, weight=1)
+    window.grid_rowconfigure(0, weight=1)
+    window.grid_rowconfigure(1, weight=1)
+    window.grid_rowconfigure(3, weight=1)
+    window.grid_rowconfigure(5, weight=1)
+    window.mainloop()
 if __name__=='__main__':
 
 
@@ -168,35 +198,25 @@ if __name__=='__main__':
     # Contenedores para las variables
     variables_frame_x,variables_frame_y=variables()
 
-
-    resultado_label = ttk.Label(window, text="")
+    resultado_label=definir_label(window)
+    '''resultado_label = ttk.Label(window, text="")
     resultado_label.grid(row=3, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
-
+    '''
 
     ruta_label=texto_label_ruta()
-
+    botones(window)
 
     '''cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=lambda: cargar_archivo(ruta_label))
     cargar_archivo_button.grid(row=5, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones'''
-    cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=lambda: cargar_archivo(ruta_label))
+    '''cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=lambda: cargar_archivo(ruta_label))
     cargar_archivo_button.grid(row=5, column=0, sticky="nsew")  # sticky for expanding in all directions
 
     cargar_modelo_button = ttk.Button(window, text="Cargar Modelo", command=cargar_modelo)
     cargar_modelo_button.grid(row=5, column=1, sticky="nsew")  # sticky for expanding in all directions
 
     calcular_button = ttk.Button(window, text="Calcular Regresión", command=calcular_regresion_click)
-    calcular_button.grid(row=2, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
-
-    # Marco para el gráfico
-    canvas_frame = ttk.Frame(window)
-    canvas_frame.grid(row=4, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+    calcular_button.grid(row=2, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones'''
+    canvas_frame=espacio_grafica(window)
 
     # Ajusta las columnas y filas para expandirse
-    window.grid_columnconfigure(0, weight=1)
-    window.grid_columnconfigure(1, weight=1)
-    window.grid_rowconfigure(0, weight=1)
-    window.grid_rowconfigure(1, weight=1)
-    window.grid_rowconfigure(3, weight=1)
-    window.grid_rowconfigure(5, weight=1)
-
-    window.mainloop()
+    ajusta_ventana(window)
