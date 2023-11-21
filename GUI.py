@@ -81,13 +81,13 @@ def obtener_datos(path):
         df = pd.read_excel(path)
     return df
 
-def cargar_archivo():
+def cargar_archivo(ruta_label):
     archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx")])
     if archivo:
         ruta_label.config(text=f"Ruta del archivo: {archivo}")
-        cargar_datos(archivo)
+        cargar_datos(archivo,variables_frame_x,variables_frame_y)
 
-def cargar_datos(archivo):
+def cargar_datos(archivo,variables_frame_x,variables_frame_y):
     global mis_datos, variable_y_seleccionada, variables_x, variables_y
     mis_datos = obtener_datos(archivo)
 
@@ -125,60 +125,78 @@ def cargar_modelo():
                 resultado_label.config(text="Objeto no encontrado en el archivo.")
     #return regresion
 
-window = tk.Tk()
-window.title("Calculadora de Regresión")
-mis_datos = None  
+def crear_ventana():
+    window = tk.Tk()
+    window.title("Calculadora de Regresión")
+    # Ajustes para centrar y cambiar el tamaño de la ventana
+    window_width = 800
+    window_height = 600
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    x_position = (screen_width - window_width) // 2
+    y_position = (screen_height - window_height) // 2
+    window.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
+    return window
 
-# Ajustes para centrar y cambiar el tamaño de la ventana
-window_width = 800
-window_height = 600
-screen_width = window.winfo_screenwidth()
-screen_height = window.winfo_screenheight()
-x_position = (screen_width - window_width) // 2
-y_position = (screen_height - window_height) // 2
-window.geometry(f"{window_width}x{window_height}+{x_position}+{y_position}")
+def variables():
+    variables_frame_x = ttk.Frame(window)
+    variables_frame_x.grid(row=0, column=0, rowspan=5, sticky="nsew", padx=10,pady=10)  
 
-# Contenedores para las variables
-variables_frame_x = ttk.Frame(window)
-variables_frame_x.grid(row=0, column=0, rowspan=5, sticky="nsew", padx=10,pady=10)  
+    variables_frame_y = ttk.Frame(window)
+    variables_frame_y.grid(row=0, column=1, rowspan=5, sticky="nsew", padx=10,pady=10)  
 
-variables_frame_y = ttk.Frame(window)
-variables_frame_y.grid(row=0, column=1, rowspan=5, sticky="nsew", padx=10,pady=10)  
+    variable_x_label = ttk.Label(variables_frame_x, text="Selecciona Variable(s) X:")
+    variable_x_label.grid(row=0, column=0, sticky="w")
 
-variable_x_label = ttk.Label(variables_frame_x, text="Selecciona Variable(s) X:")
-variable_x_label.grid(row=0, column=0, sticky="w")
+    variable_y_label = ttk.Label(variables_frame_y, text="Selecciona Variable Y:")
+    variable_y_label.grid(row=0, column=0, sticky="w")
+    return variables_frame_x,variables_frame_y
 
-variable_y_label = ttk.Label(variables_frame_y, text="Selecciona Variable Y:")
-variable_y_label.grid(row=0, column=0, sticky="w")
+def texto_label_ruta():
+    
+
+    ruta_label = ttk.Label(window, text="Ruta del archivo: ")
+    ruta_label.grid(row=6, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+    return ruta_label
+if __name__=='__main__':
 
 
-resultado_label = ttk.Label(window, text="")
-resultado_label.grid(row=3, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+    
+    mis_datos = None  
+    
+    window=crear_ventana()
+    # Contenedores para las variables
+    variables_frame_x,variables_frame_y=variables()
 
-ruta_label = ttk.Label(window, text="Ruta del archivo: ")
-ruta_label.grid(row=6, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
 
-cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=cargar_archivo)
-cargar_archivo_button.grid(row=5, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
-cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=cargar_archivo)
-cargar_archivo_button.grid(row=5, column=0, sticky="nsew")  # sticky for expanding in all directions
+    resultado_label = ttk.Label(window, text="")
+    resultado_label.grid(row=3, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
 
-cargar_modelo_button = ttk.Button(window, text="Cargar Modelo", command=cargar_modelo)
-cargar_modelo_button.grid(row=5, column=1, sticky="nsew")  # sticky for expanding in all directions
 
-calcular_button = ttk.Button(window, text="Calcular Regresión", command=calcular_regresion_click)
-calcular_button.grid(row=2, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+    ruta_label=texto_label_ruta()
 
-# Marco para el gráfico
-canvas_frame = ttk.Frame(window)
-canvas_frame.grid(row=4, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
 
-# Ajusta las columnas y filas para expandirse
-window.grid_columnconfigure(0, weight=1)
-window.grid_columnconfigure(1, weight=1)
-window.grid_rowconfigure(0, weight=1)
-window.grid_rowconfigure(1, weight=1)
-window.grid_rowconfigure(3, weight=1)
-window.grid_rowconfigure(5, weight=1)
+    '''cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=lambda: cargar_archivo(ruta_label))
+    cargar_archivo_button.grid(row=5, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones'''
+    cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=lambda: cargar_archivo(ruta_label))
+    cargar_archivo_button.grid(row=5, column=0, sticky="nsew")  # sticky for expanding in all directions
 
-window.mainloop()
+    cargar_modelo_button = ttk.Button(window, text="Cargar Modelo", command=cargar_modelo)
+    cargar_modelo_button.grid(row=5, column=1, sticky="nsew")  # sticky for expanding in all directions
+
+    calcular_button = ttk.Button(window, text="Calcular Regresión", command=calcular_regresion_click)
+    calcular_button.grid(row=2, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+
+    # Marco para el gráfico
+    canvas_frame = ttk.Frame(window)
+    canvas_frame.grid(row=4, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
+
+    # Ajusta las columnas y filas para expandirse
+    window.grid_columnconfigure(0, weight=1)
+    window.grid_columnconfigure(1, weight=1)
+    window.grid_rowconfigure(0, weight=1)
+    window.grid_rowconfigure(1, weight=1)
+    window.grid_rowconfigure(3, weight=1)
+    window.grid_rowconfigure(5, weight=1)
+
+    window.mainloop()
