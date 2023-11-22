@@ -81,14 +81,19 @@ def calcular_regresion_click():
         df = pd.read_excel(path)
     return df'''
 
-def cargar_archivo(ruta_label):
+'''def cargar_archivo(ruta_label):
     archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx"),("DataBase Files",".db")])
     if archivo:
         ruta_label.config(text=f"Ruta del archivo: {archivo}")
-        cargar_datos(archivo,variables_frame_x,variables_frame_y)
+        cargar_datos(archivo,variables_frame_x,variables_frame_y)'''
 
-def cargar_datos(archivo,variables_frame_x,variables_frame_y):
+def cargar_datos(variables_frame_x,variables_frame_y,ruta_label):
     global mis_datos, variable_y_seleccionada, variables_x, variables_y
+    
+    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx"),("DataBase Files",".db")])
+    if archivo:
+        ruta_label.config(text=f"Ruta del archivo: {archivo}")
+
     mis_datos = leer_archivos(archivo)
 
     columnas_numericas = mis_datos.select_dtypes(include='number').columns.tolist()
@@ -103,7 +108,7 @@ def cargar_datos(archivo,variables_frame_x,variables_frame_y):
 
         checkbutton_y = ttk.Checkbutton(variables_frame_y, text=col, variable=variables_y[col], command=lambda col=col: seleccionar_variable_y(col))
         checkbutton_y.grid(row=i, column=0, sticky="w")
-
+    
 def seleccionar_variable_y(col):
     global variable_y_seleccionada
     # Desmarca otras variables Y y almacena la variable Y seleccionada
@@ -112,7 +117,7 @@ def seleccionar_variable_y(col):
     variable_y_seleccionada = col
     variables_y[col].set(True)
 
-def cargar_modelo():
+'''def cargar_modelo(label):
     #archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
     archivo = filedialog.askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
     if archivo:
@@ -120,10 +125,10 @@ def cargar_modelo():
             try:
                 
                 regresion = pickle.load(archivo)
-                resultado_label.config(text=regresion)
+                label.config(text=regresion)
             except EOFError:
-                resultado_label.config(text="Objeto no encontrado en el archivo.")
-    #return regresion
+                label.config(text="Objeto no encontrado en el archivo.")
+    #return regresion'''
 
 def crear_ventana():
     window = tk.Tk()
@@ -159,11 +164,11 @@ def texto_label_ruta():
     ruta_label.grid(row=6, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
     return ruta_label
 
-def botones(window):
-    cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=lambda: cargar_archivo(ruta_label))
+def botones(window,variables_frame_x,variables_frame_y):
+    cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=lambda: cargar_datos(variables_frame_x,variables_frame_y,ruta_label))
     cargar_archivo_button.grid(row=5, column=0, sticky="nsew")  # sticky for expanding in all directions
 
-    cargar_modelo_button = ttk.Button(window, text="Cargar Modelo", command=cargar_modelo)
+    cargar_modelo_button = ttk.Button(window, text="Cargar Modelo", command=lambda: cargar_modelo(resultado_label))
     cargar_modelo_button.grid(row=5, column=1, sticky="nsew")  # sticky for expanding in all directions
 
     calcular_button = ttk.Button(window, text="Calcular Regresión", command=calcular_regresion_click)
@@ -204,7 +209,7 @@ if __name__=='__main__':
     '''
 
     ruta_label=texto_label_ruta()
-    botones(window)
+    botones(window,variables_frame_x,variables_frame_y)
 
     '''cargar_archivo_button = ttk.Button(window, text="Cargar Archivo", command=lambda: cargar_archivo(ruta_label))
     cargar_archivo_button.grid(row=5, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones'''
