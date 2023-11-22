@@ -150,10 +150,10 @@ def obtener_datos(path):
     elif extension == 'xlsx':
         df = pd.read_excel(path)
     return df
-def borrar_grafica():
+'''def borrar_grafica():
     # Verifica si hay un lienzo y lo destruye
     if hasattr(window, 'canvas'):
-        window.canvas.get_tk_widget().destroy()
+        window.canvas.get_tk_widget().destroy()'''
 
 
 # Configuración de la root principal
