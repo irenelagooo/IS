@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def datos_regresion(X, Y):
-    n=X.shape[-1]
+    n=X.shape[1]
     y_media = Y.mean()
     x_media=[]
     for i in range(n):
@@ -42,7 +42,7 @@ def bondad_ajuste(X, Y):
     recta = recta_regresion(X, Y)
     SST = ((Y - Y.mean())**2).sum()
     SSR = ((recta - Y.mean())**2).sum()
-    R_cuadrado = SSR / SST
+    R_cuadrado =1- SSR / SST
     return R_cuadrado
 
 def formula_recta(m,n):
