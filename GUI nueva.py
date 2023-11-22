@@ -12,6 +12,7 @@ from carga_guardado import *
 
 
 
+
 # Función para cargar los datos y mostrarlos en una tabla OK.
 def cargar_datos(archivo):
     global mis_datos
@@ -19,6 +20,7 @@ def cargar_datos(archivo):
     mis_datos = leer_archivos(archivo)
     '''if not mis_datos.index.name:  
         mis_datos.index.name = 'Índice'
+
         mis_datos.reset_index(inplace=True)'''
 
     # Actualizar etiqueta de la ruta
@@ -97,9 +99,11 @@ def cargar_datos(archivo):
 
     for col in columnas_numericas:
         # Verificar si la columna es el índice
+
         '''if col != 'Índice':'''
         checkbutton_x = ttk.Checkbutton(variables_frame_x, text=col, variable=variables_x[col])
         checkbutton_x.pack(side=tk.LEFT)
+
 
     # Etiqueta para seleccionar variable Y
     seleccionar_var_y_label = tk.Label(root, text="Selecciona variable Y:")
@@ -149,6 +153,9 @@ def cargar_archivo():
         cargar_archivo_btn.place(x=680,y=7)
         cargar_modelo_btn.place(x=800,y=7)
 
+
+
+
 # Configuración de la root principal
 root = tk.Tk()
 root.title("Interfaz de Datos")
@@ -174,8 +181,7 @@ ruta_label.pack(padx=10, pady=10)
 # Botón para cargar archivo
 cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=cargar_archivo)
 cargar_archivo_btn.place(x=500,y=7)
-def cargar_modelo():
-    pass
+
 cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=cargar_modelo)
 cargar_modelo_btn.place(x=600,y=7)
 root.mainloop()
