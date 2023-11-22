@@ -8,17 +8,18 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 from regresionsimplemultiple import *
 from claseRegresion import Regresion
-import pickle
+from carga_guardado import *
 
 
-# Función para cargar los datos y mostrarlos en una tabla
+
+# Función para cargar los datos y mostrarlos en una tabla OK.
 def cargar_datos(archivo):
     global mis_datos
 
-    mis_datos = obtener_datos(archivo)
-    if not mis_datos.index.name:  
+    mis_datos = leer_archivos(archivo)
+    '''if not mis_datos.index.name:  
         mis_datos.index.name = 'Índice'
-        mis_datos.reset_index(inplace=True)
+        mis_datos.reset_index(inplace=True)'''
 
     # Actualizar etiqueta de la ruta
     ruta_label.config(text=f"Ruta: {archivo}")
@@ -42,9 +43,9 @@ def cargar_datos(archivo):
         treeview.heading(col, text=col, anchor='center')  # Encabezados centrados
         treeview.column(col, anchor='center', width=150)  # Datos centrados en las columnas
 
-    if 'Índice' in mis_datos.columns:
+    '''if 'Índice' in mis_datos.columns:
         treeview.heading('Índice', text='Índice', anchor='center')
-        treeview.column('Índice', anchor='center', width=50)
+        treeview.column('Índice', anchor='center', width=50)'''
         
     
     treeview.heading('#0', text='', anchor='center')  # Encabezado centrado
@@ -96,9 +97,9 @@ def cargar_datos(archivo):
 
     for col in columnas_numericas:
         # Verificar si la columna es el índice
-        if col != 'Índice':
-            checkbutton_x = ttk.Checkbutton(variables_frame_x, text=col, variable=variables_x[col])
-            checkbutton_x.pack(side=tk.LEFT)
+        '''if col != 'Índice':'''
+        checkbutton_x = ttk.Checkbutton(variables_frame_x, text=col, variable=variables_x[col])
+        checkbutton_x.pack(side=tk.LEFT)
 
     # Etiqueta para seleccionar variable Y
     seleccionar_var_y_label = tk.Label(root, text="Selecciona variable Y:")
@@ -122,39 +123,31 @@ def cargar_datos(archivo):
 
     columnas_numericas_y = mis_datos.select_dtypes(include='number').columns.tolist()
 
-    def seleccionar_variable_y(variable):
+    '''def seleccionar_variable_y(variable):
         global variable_y_seleccionada
-        variable_y_seleccionada = variable
+        variable_y_seleccionada = variable'''
+    y_seleccionada=seleccionar_y(columnas_numericas_y,variables_frame_y)
+    
 
+
+def seleccionar_y(columnas_numericas_y,variables_frame_y):
     variable_y_seleccionada_radio = tk.StringVar()
     for col in columnas_numericas_y:
-        if col != 'Índice':
-            radio_y = ttk.Radiobutton(variables_frame_y, text=col, variable=variable_y_seleccionada_radio, value=col,
-                                      command=lambda col=col: seleccionar_variable_y(col))
-            radio_y.pack(side=tk.LEFT)
+        '''if col != 'Índice':'''
+        radio_y = ttk.Radiobutton(variables_frame_y, text=col, variable=variable_y_seleccionada_radio, value=col,)
+        radio_y.pack(side=tk.LEFT)
+
+    variable_seleccionada_y = variable_y_seleccionada_radio.get()
+    return variable_seleccionada_y
 
 # Función para cargar un archivo
 def cargar_archivo():
-    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx")])
+    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx"),("DataBase Files",".db")])
     if archivo:
         cargar_datos(archivo)
         # Mostrar botones después de cargar el archivo
         cargar_archivo_btn.place(x=680,y=7)
         cargar_modelo_btn.place(x=800,y=7)
-
-# Función para obtener los datos del archivo
-def obtener_datos(path):
-    extension = path.split('.')[-1]
-    if extension == 'csv':
-        df = pd.read_csv(path, delimiter=',') 
-    elif extension == 'xlsx':
-        df = pd.read_excel(path)
-    return df
-'''def borrar_grafica():
-    # Verifica si hay un lienzo y lo destruye
-    if hasattr(window, 'canvas'):
-        window.canvas.get_tk_widget().destroy()'''
-
 
 # Configuración de la root principal
 root = tk.Tk()
