@@ -42,7 +42,7 @@ def bondad_ajuste(X, Y):
     recta = recta_regresion(X, Y)
     SST = ((Y - Y.mean())**2).sum()
     SSR = ((recta - Y.mean())**2).sum()
-    R_cuadrado = SSR / SST
+    R_cuadrado =1- SSR / SST
     return R_cuadrado
 
 def formula_recta(m,n):
