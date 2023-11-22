@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def datos_regresion(X, Y):
-    n=X.shape[-1]
+    n=X.shape[1]
     y_media = Y.mean()
     x_media=[]
     for i in range(n):
