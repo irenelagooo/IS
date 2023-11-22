@@ -9,7 +9,7 @@ import pandas as pd
 from regresionsimplemultiple import *
 from claseRegresion import Regresion
 import pickle
-
+from carga_guardado import *
 
 # Función para cargar los datos y mostrarlos en una tabla
 def cargar_datos(archivo):
@@ -19,7 +19,7 @@ def cargar_datos(archivo):
     if not mis_datos.index.name:  
         mis_datos.index.name = 'Índice'
         mis_datos.reset_index(inplace=True)
-
+    
     # Actualizar etiqueta de la ruta
     ruta_label.config(text=f"Ruta: {archivo}")
 
@@ -96,7 +96,7 @@ def cargar_datos(archivo):
 
     for col in columnas_numericas:
         # Verificar si la columna es el índice
-        if col != 'Índice':
+        if col!='Índice':
             checkbutton_x = ttk.Checkbutton(variables_frame_x, text=col, variable=variables_x[col])
             checkbutton_x.pack(side=tk.LEFT)
 
@@ -150,6 +150,7 @@ def obtener_datos(path):
     elif extension == 'xlsx':
         df = pd.read_excel(path)
     return df
+
 '''def borrar_grafica():
     # Verifica si hay un lienzo y lo destruye
     if hasattr(window, 'canvas'):
@@ -181,8 +182,7 @@ ruta_label.pack(padx=10, pady=10)
 # Botón para cargar archivo
 cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=cargar_archivo)
 cargar_archivo_btn.place(x=500,y=7)
-def cargar_modelo():
-    pass
+
 cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=cargar_modelo)
 cargar_modelo_btn.place(x=600,y=7)
 root.mainloop()
