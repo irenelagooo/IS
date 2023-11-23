@@ -9,9 +9,9 @@ import pandas as pd
 from regresionsimplemultiple import *
 from claseRegresion import Regresion
 import pickle
-from carga_guardado import cargar_regresion
+from carga_guardado import cargar_regresion,guardar_regresion,leer_archivos
 def crear_interfaz():
-    global ruta_label, cargar_archivo_btn, cargar_modelo_btn, resultado_label, ancho_root, altura_root, calcular_predicciones_btn
+    global cargar_archivo_btn, cargar_modelo_btn, resultado_label, ancho_root, altura_root, calcular_predicciones_btn
 
     
     ancho_pantalla = root.winfo_screenwidth()
@@ -25,8 +25,7 @@ def crear_interfaz():
     
     root.geometry(f"{ancho_root}x{altura_root}+{x_pos}+{y_pos}")
     
-    ruta_label = tk.Label(root, text="Ruta: ")
-    ruta_label.pack(padx=10, pady=10)
+    
     resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
     resultado_label.place(x=450, y=400)
     cerrar_btn = tk.Button(root, text="Salir", command=cerrar_programa, bg="red", fg="white", font=("Arial", 12))
@@ -35,19 +34,8 @@ def crear_interfaz():
     calcular_predicciones_btn.place_forget()
     cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=cargar_archivo)
     cargar_archivo_btn.place(x=500,y=7)
-    def cargar_modelo():
-        limpiar_interfaz()
-        crear_interfaz()
-        archivo = filedialog.askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
-        if archivo:
-            with open(archivo, 'rb') as archivo:
-                try:
-                    
-                    regresion = pickle.load(archivo)
-                    mostrar_modelo(regresion)
-                except EOFError:
-                    resultado_label.config(text="Objeto no encontrado en el archivo.")
-    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=cargar_modelo)
+    
+    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=lambda: cargar_regresion(resultado_label))
     cargar_modelo_btn.place(x=600,y=7)
 def eliminar_frame_blanco():
     global frame_blanco
@@ -102,12 +90,14 @@ def cargar_datos(archivo):
     
     global mis_datos
 
-    mis_datos = obtener_datos(archivo)
-    if not mis_datos.index.name:  
+    mis_datos = leer_archivos(archivo)
+    '''if not mis_datos.index.name:  
         mis_datos.index.name = 'Índice'
-        mis_datos.reset_index(inplace=True)
+        mis_datos.reset_index(inplace=True)'''
 
-    ruta_label.config(text=f"Ruta: {archivo}")
+
+    ruta_label = tk.Label(root, text=f"Ruta: {archivo}")
+    ruta_label.pack(padx=10, pady=10)
 
     frame_tabla = tk.Frame(root)
     frame_tabla.pack(pady=10, padx=20)
@@ -124,9 +114,9 @@ def cargar_datos(archivo):
         treeview.heading(col, text=col, anchor='center')  
         treeview.column(col, anchor='center', width=150)  
 
-    if 'Índice' in mis_datos.columns:
+    '''if 'Índice' in mis_datos.columns:
         treeview.heading('Índice', text='Índice', anchor='center')
-        treeview.column('Índice', anchor='center', width=50)
+        treeview.column('Índice', anchor='center', width=50)'''
         
     
     treeview.heading('#0', text='', anchor='center') 
@@ -149,7 +139,7 @@ def cargar_datos(archivo):
     def calcular_regresion_click():
         crear_frame_blanco()
 
-        global l, R, x_seleccionadas
+        global x_seleccionadas
         plt.close('all') 
     
         x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
@@ -163,7 +153,7 @@ def cargar_datos(archivo):
             resultado_label.lift()
             calcular_predicciones_btn.place_forget()
 
-            return
+        
     
         x = mis_datos[x_seleccionadas]
         y = mis_datos[y_seleccionada]
@@ -184,7 +174,7 @@ def cargar_datos(archivo):
         
         imprimir_datos(x, y)
         
-        descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=guardar_regresion)
+        descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R))
         descargar_modelo_button.place(x=130,y=395)
         
     
@@ -210,13 +200,14 @@ def cargar_datos(archivo):
     canvas_x.create_window((0, 0), window=variables_frame_x, anchor="nw")
 
     columnas_numericas = mis_datos.select_dtypes(include='number').columns.tolist()
+    #columnas_numericas.remove('Índice')
     global variables_x
     variables_x = {col: tk.BooleanVar(value=False) for col in columnas_numericas}
 
     for col in columnas_numericas:
-        if col != 'Índice':
-            checkbutton_x = ttk.Checkbutton(variables_frame_x, text=col, variable=variables_x[col])
-            checkbutton_x.pack(side=tk.LEFT)
+        '''if col != 'Índice':'''
+        checkbutton_x = ttk.Checkbutton(variables_frame_x, text=col, variable=variables_x[col])
+        checkbutton_x.pack(side=tk.LEFT)
     
     seleccionar_var_y_label = tk.Label(root, text="Selecciona variable Y:")
     seleccionar_var_y_label.place(x=100, y=350)
@@ -233,33 +224,32 @@ def cargar_datos(archivo):
 
     canvas_y.create_window((0, 0), window=variables_frame_y, anchor="nw")
 
-    columnas_numericas_y = mis_datos.select_dtypes(include='number').columns.tolist()
+    #columnas_numericas_y = mis_datos.select_dtypes(include='number').columns.tolist()
 
     def seleccionar_variable_y(variable):
         global variable_y_seleccionada
         variable_y_seleccionada = variable
 
     variable_y_seleccionada_radio = tk.StringVar()
-    for col in columnas_numericas_y:
-        if col != 'Índice':
-            radio_y = ttk.Radiobutton(variables_frame_y, text=col, variable=variable_y_seleccionada_radio, value=col,
-                                      command=lambda col=col: seleccionar_variable_y(col))
-            radio_y.pack(side=tk.LEFT)
+    for col in columnas_numericas:
+        '''if col != 'Índice':'''
+        radio_y = ttk.Radiobutton(variables_frame_y, text=col, variable=variable_y_seleccionada_radio, value=col,
+                                    command=lambda col=col: seleccionar_variable_y(col))
+        radio_y.pack(side=tk.LEFT)
 
 
-def guardar_regresion():
+'''def guardar_regresion(m,n,R):
     
     texto = simpledialog.askstring("Descripción", "Ingrese un texto que desee guardar con los datos de la regresión:")
     
-    m=l[:-1]
-    n=l[-1]
+    
     
     regresion=Regresion(m,n,texto,R)
     archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
     
     if archivo:
         with open(archivo,'wb') as archivo:
-            pickle.dump(regresion,archivo)
+            pickle.dump(regresion,archivo)'''
 
 def imprimir_datos(X, Y, x_nuevo=None):
     n = X.shape[1] 
@@ -327,10 +317,10 @@ def imprimir_datos(X, Y, x_nuevo=None):
 
     plt.close('all')
 
-def archivo_bien():
+def cargar_archivo():
     limpiar_interfaz()
     crear_interfaz()
-    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx")])
+    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx"),("DataBase Files", ".db")])
     if archivo:
         cargar_datos(archivo)
         cargar_archivo_btn.place(x=680,y=7)
@@ -342,12 +332,6 @@ def cerrar_programa():
 def destruir_widgets():
     for widget in root.winfo_children():
         widget.destroy()
-def cargar_archivo():
-  
-    respuesta = messagebox.askyesno("Cargar otro archivo", "¿Desea cargar un archivo?")
-    if respuesta:
-        
-       archivo_bien()
     
 
 
@@ -355,13 +339,6 @@ def limpiar_interfaz():
     for widget in root.winfo_children():
         widget.destroy()
 
-def obtener_datos(path):
-    extension = path.split('.')[-1]
-    if extension == 'csv':
-        df = pd.read_csv(path, delimiter=',') 
-    elif extension == 'xlsx':
-        df = pd.read_excel(path)
-    return df
 def borrar_grafica():
     if hasattr(root, 'frame_graficas'):
         root.frame_graficas.destroy()
