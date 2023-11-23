@@ -11,7 +11,7 @@ from claseRegresion import Regresion
 import pickle
 from carga_guardado import cargar_regresion,guardar_regresion,leer_archivos
 def crear_interfaz():
-    global resultado_label, calcular_predicciones_btn
+    global resultado_label
 
     
     ancho_root = root.winfo_screenwidth()
@@ -36,8 +36,8 @@ def crear_interfaz():
     cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command= lambda: cargar_regresion(resultado_label))
     cargar_modelo_btn.place(x=900,y=7)
     
-def boton_predicciones():
-    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command=calcular_predicciones_click)
+def boton_predicciones(x_seleccionadas):
+    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(x_seleccionadas))
     return calcular_predicciones_btn
     
 def eliminar_frame_blanco():
@@ -51,10 +51,11 @@ def crear_frame_blanco():
     
     frame_blanco = tk.Frame(root, bg='white')
     frame_blanco.place(x=0, y=840, width=10000, height=30)
-def calcular_predicciones_click():
+
+def calcular_predicciones_click(x_seleccionadas):
     global cuadros_texto
     global root 
-    global x_seleccionadas  
+    #global x_seleccionadas  
     
     if 'cuadros_texto' in globals():
         for entry in cuadros_texto:
@@ -138,54 +139,6 @@ def cargar_datos(archivo):
     #width_of_label = 400 
 
 
-    
-    def calcular_regresion_click():
-        crear_frame_blanco()
-
-        global x_seleccionadas
-        plt.close('all') 
-    
-        x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
-
-        y_seleccionada = variable_y_seleccionada_radio.get()
-    
-        if not x_seleccionadas or not y_seleccionada:
-            resultado_label.config(text="Error: Debes seleccionar al menos una variable X e Y")
-            x_coordinate = (ancho_root - width_of_label) / 2 
-            resultado_label.place_configure(x=x_coordinate)
-            resultado_label.lift()
-            calcular_predicciones_btn.place_forget()
-
-        
-    
-        x = mis_datos[x_seleccionadas]
-        y = mis_datos[y_seleccionada]
-    
-        l = datos_regresion(x, y)
-        n = l[-1]
-        m = l[:-1]
-    
-        R = bondad_ajuste(x, y)
-        r = formula_recta(m, n)
-        resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
-        x_coordinate = (ancho_root - width_of_label) / 2  
-        resultado_label.place_configure(x=x_coordinate)
-        resultado_label.lift()
-        resultado_label.lift()
-        calcular_predicciones_btn.place(x=20, y=800)
-        root.update()
-        
-        imprimir_datos(x, y)
-        
-        descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R))
-        descargar_modelo_button.place(x=130,y=395)
-        
-    
-
-    boton_calculo = tk.Button(root, text="Calcular Regresión", command=calcular_regresion_click)
-    boton_calculo.place(x=700, y=325)
-    
-
     seleccionar_var_x_label = tk.Label(root, text="Selecciona variable(s) X")
     seleccionar_var_x_label.place(x=100, y=300)
 
@@ -204,7 +157,7 @@ def cargar_datos(archivo):
 
     columnas_numericas = mis_datos.select_dtypes(include='number').columns.tolist()
     #columnas_numericas.remove('Índice')
-    global variables_x
+    #global variables_x
     variables_x = {col: tk.BooleanVar(value=False) for col in columnas_numericas}
 
     for col in columnas_numericas:
@@ -228,11 +181,7 @@ def cargar_datos(archivo):
     canvas_y.create_window((0, 0), window=variables_frame_y, anchor="nw")
 
     #columnas_numericas_y = mis_datos.select_dtypes(include='number').columns.tolist()
-
-    def seleccionar_variable_y(variable):
-        global variable_y_seleccionada
-        variable_y_seleccionada = variable
-
+    
     variable_y_seleccionada_radio = tk.StringVar()
     for col in columnas_numericas:
         '''if col != 'Índice':'''
@@ -240,6 +189,56 @@ def cargar_datos(archivo):
                                     command=lambda col=col: seleccionar_variable_y(col))
         radio_y.pack(side=tk.LEFT)
 
+    boton_calculo = tk.Button(root, text="Calcular Regresión", command= lambda: calcular_regresion_click(variables_x,variable_y_seleccionada_radio))
+    boton_calculo.place(x=700, y=325)
+
+def calcular_regresion_click(variables_x,variable_y_seleccionada_radio):
+    crear_frame_blanco()
+    width_of_label=400
+    
+    plt.close('all') 
+
+    x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
+
+    y_seleccionada = variable_y_seleccionada_radio.get()
+
+    if not x_seleccionadas or not y_seleccionada:
+        resultado_label.config(text="Error: Debes seleccionar al menos una variable X e Y")
+        x_coordinate = (width_of_label) / 2 
+        resultado_label.place_configure(x=x_coordinate)
+        resultado_label.lift()
+        #calcular_predicciones_btn.place_forget()
+    
+    
+
+    x = mis_datos[x_seleccionadas]
+    y = mis_datos[y_seleccionada]
+
+    l = datos_regresion(x, y)
+    n = l[-1]
+    m = l[:-1]
+
+    R = bondad_ajuste(x, y)
+    r = formula_recta(m, n)
+    resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
+    x_coordinate = (width_of_label) / 2  
+    resultado_label.place_configure(x=x_coordinate)
+    resultado_label.lift()
+    resultado_label.lift()
+
+    calcular_predicciones_btn=boton_predicciones(x_seleccionadas)
+    calcular_predicciones_btn.place(x=20, y=800)
+    root.update()
+    
+    imprimir_datos(x, y)
+    
+    descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R))
+    descargar_modelo_button.place(x=130,y=395)
+
+
+def seleccionar_variable_y(variable):
+    global variable_y_seleccionada
+    variable_y_seleccionada = variable
 
 '''def guardar_regresion(m,n,R):
     
