@@ -136,7 +136,7 @@ def guardar_regresion(X,Y):
             print("Objeto no encontrado en el archivo.")
     return regresion'''
 
-def cargar_modelo(label):
+def cargar_regresion(label):
     #archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
     archivo = filedialog.askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
     if archivo:

@@ -11,44 +11,35 @@ from claseRegresion import Regresion
 import pickle
 from carga_guardado import cargar_regresion
 def crear_interfaz():
-    global ruta_label, cargar_archivo_btn, cargar_modelo_btn, resultado_label, ancho_root, altura_root, calcular_predicciones_btn
+    global resultado_label, calcular_predicciones_btn
 
     
-    ancho_pantalla = root.winfo_screenwidth()
+    ancho_root = root.winfo_screenwidth()
     altura_pantalla = root.winfo_screenheight()
     
-    ancho_root = ancho_pantalla // 2
     altura_root = altura_pantalla - 100
     
-    x_pos = ancho_pantalla // 4
+    x_pos = ancho_root // 1000
     y_pos = 0
     
     root.geometry(f"{ancho_root}x{altura_root}+{x_pos}+{y_pos}")
+
     
-    ruta_label = tk.Label(root, text="Ruta: ")
-    ruta_label.pack(padx=10, pady=10)
     resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
     resultado_label.place(x=450, y=400)
     cerrar_btn = tk.Button(root, text="Salir", command=cerrar_programa, bg="red", fg="white", font=("Arial", 12))
-    cerrar_btn.place(x=900, y=0)
-    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command=calcular_predicciones_click)
-    calcular_predicciones_btn.place_forget()
+    cerrar_btn.place(x=1000, y=5)
+    #calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command=calcular_predicciones_click)
+    #calcular_predicciones_btn.place_forget()
     cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=cargar_archivo)
-    cargar_archivo_btn.place(x=500,y=7)
-    def cargar_modelo():
-        limpiar_interfaz()
-        crear_interfaz()
-        archivo = filedialog.askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
-        if archivo:
-            with open(archivo, 'rb') as archivo:
-                try:
-                    
-                    regresion = pickle.load(archivo)
-                    mostrar_modelo(regresion)
-                except EOFError:
-                    resultado_label.config(text="Objeto no encontrado en el archivo.")
-    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=cargar_modelo)
-    cargar_modelo_btn.place(x=600,y=7)
+    cargar_archivo_btn.place(x=800,y=7)
+    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command= lambda: cargar_regresion(resultado_label))
+    cargar_modelo_btn.place(x=900,y=7)
+    
+def boton_predicciones():
+    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command=calcular_predicciones_click)
+    return calcular_predicciones_btn
+    
 def eliminar_frame_blanco():
     global frame_blanco
     
@@ -106,8 +97,10 @@ def cargar_datos(archivo):
     if not mis_datos.index.name:  
         mis_datos.index.name = 'Índice'
         mis_datos.reset_index(inplace=True)
-
-    ruta_label.config(text=f"Ruta: {archivo}")
+    
+    
+    ruta_label = tk.Label(root, text=f"Ruta: {archivo}")
+    ruta_label.pack(padx=10, pady=10)
 
     frame_tabla = tk.Frame(root)
     frame_tabla.pack(pady=10, padx=20)
@@ -142,51 +135,10 @@ def cargar_datos(archivo):
 
     treeview.pack()
 
-    width_of_label = 400 
+    #width_of_label = 400 
 
 
     
-    def calcular_regresion_click():
-        crear_frame_blanco()
-
-        global l, R, x_seleccionadas
-        plt.close('all') 
-    
-        x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
-
-        y_seleccionada = variable_y_seleccionada_radio.get()
-    
-        if not x_seleccionadas or not y_seleccionada:
-            resultado_label.config(text="Error: Debes seleccionar al menos una variable X e Y")
-            x_coordinate = (ancho_root - width_of_label) / 2 
-            resultado_label.place_configure(x=x_coordinate)
-            resultado_label.lift()
-            calcular_predicciones_btn.place_forget()
-
-            return
-    
-        x = mis_datos[x_seleccionadas]
-        y = mis_datos[y_seleccionada]
-    
-        l = datos_regresion(x, y)
-        n = l[-1]
-        m = l[:-1]
-    
-        R = bondad_ajuste(x, y)
-        r = formula_recta(m, n)
-        resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
-        x_coordinate = (ancho_root - width_of_label) / 2  
-        resultado_label.place_configure(x=x_coordinate)
-        resultado_label.lift()
-        resultado_label.lift()
-        calcular_predicciones_btn.place(x=20, y=800)
-        root.update()
-        
-        imprimir_datos(x, y)
-        
-        descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=guardar_regresion)
-        descargar_modelo_button.place(x=130,y=395)
-        
     
 
     boton_calculo = tk.Button(root, text="Calcular Regresión", command=calcular_regresion_click)
@@ -234,17 +186,66 @@ def cargar_datos(archivo):
     canvas_y.create_window((0, 0), window=variables_frame_y, anchor="nw")
 
     columnas_numericas_y = mis_datos.select_dtypes(include='number').columns.tolist()
-
-    def seleccionar_variable_y(variable):
-        global variable_y_seleccionada
-        variable_y_seleccionada = variable
-
+    global variable_y_seleccionada_radio
     variable_y_seleccionada_radio = tk.StringVar()
     for col in columnas_numericas_y:
         if col != 'Índice':
             radio_y = ttk.Radiobutton(variables_frame_y, text=col, variable=variable_y_seleccionada_radio, value=col,
-                                      command=lambda col=col: seleccionar_variable_y(col))
+                                        command=lambda col=col: seleccionar_variable_y(col))
             radio_y.pack(side=tk.LEFT)
+
+
+def calcular_regresion_click():
+        crear_frame_blanco()
+        width_of_label=400
+        global l, R, x_seleccionadas
+        plt.close('all') 
+    
+        x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
+
+        y_seleccionada = variable_y_seleccionada_radio.get()
+    
+        if not x_seleccionadas or not y_seleccionada:
+            resultado_label.config(text="Error: Debes seleccionar al menos una variable X e Y", style="Boton.TLabel")
+            
+            x_coordinate = (width_of_label) / 2 
+            resultado_label.place_configure(x=x_coordinate)
+            resultado_label.lift()
+            #calcular_predicciones_btn.place_forget()
+
+            
+    
+        x = mis_datos[x_seleccionadas]
+        y = mis_datos[y_seleccionada]
+    
+        l = datos_regresion(x, y)
+        n = l[-1]
+        m = l[:-1]
+    
+        R = bondad_ajuste(x, y)
+        r = formula_recta(m, n)
+        resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
+        x_coordinate = (width_of_label) / 2  
+        resultado_label.place_configure(x=x_coordinate)
+        resultado_label.lift()
+        resultado_label.lift()
+        calcular_predicciones_btn=boton_predicciones()
+        calcular_predicciones_btn.place(x=20, y=800)
+        root.update()
+        
+        imprimir_datos(x, y)
+        
+        descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=guardar_regresion)
+        descargar_modelo_button.place(x=130,y=395)
+        
+    
+
+
+def seleccionar_variable_y(variable):
+    global variable_y_seleccionada
+    variable_y_seleccionada = variable
+
+
 
 
 def guardar_regresion():
@@ -261,35 +262,50 @@ def guardar_regresion():
         with open(archivo,'wb') as archivo:
             pickle.dump(regresion,archivo)
 
+
+def configurar_scroll_region(canvas_graficas):
+    canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all'))
+
 def imprimir_datos(X, Y, x_nuevo=None):
-    n = X.shape[1] 
-
-    fig, axes = plt.subplots(1, n, figsize=(8 * n, 6))
-
-    if n == 1:
-        axes = [axes] 
-        
-    for i in range(n):
-        x = pd.DataFrame({'X': X.iloc[:, i]})
+    n=X.shape[1]
+    if n==1:
+        x = pd.DataFrame({'X': X.iloc[:, 0]})
         recta = recta_regresion(x, Y)
-        axes[i].scatter(X.iloc[:, i], Y, color='blue', label=f'Datos de entrenamiento', s=1)
-        axes[i].plot(X.iloc[:, i], recta, color='black', label=f'Recta de Regresión', linewidth=1)
+        plt.scatter(X.iloc[:, 0], Y, color='blue', label=f'Datos de entrenamiento', s=1)
+        plt.plot(X.iloc[:, 0], recta, color='black', label=f'Recta de Regresión', linewidth=1)
 
         if x_nuevo is not None:
-            x_nuevo2 = pd.DataFrame({'X': x_nuevo.iloc[:, i]})
+            x_nuevo2 = pd.DataFrame({'X': x_nuevo.iloc[:, 0]})
             y_nuevo = recta_regresion(x, Y, x_nuevo2)
-            axes[i].scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20)
+            plt.scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20) 
 
-        axes[i].set_xlabel(X.columns[i])
-        axes[i].set_ylabel(Y.name)
-        axes[i].legend()
+        plt.xlabel(X.columns[0])
+        plt.ylabel(Y.name)
+        plt.legend()
+       
+    else:
+        _, axes = plt.subplots(n, 1, figsize=(8*n, 6))
+        
+        for i in range(n):
+            x = pd.DataFrame({'X': X.iloc[:, i]})  # x tiene que ser un DataFrame, no DataSeries
+            recta = recta_regresion(x, Y)
+            axes[i].scatter(X.iloc[:, i], Y, color='blue', label=f'Datos de entrenamiento', s=1)
+            axes[i].plot(X.iloc[:, i], recta, color='black', label=f'Recta de Regresión', linewidth=1)
 
-    plt.tight_layout()
+            if x_nuevo is not None:
+                x_nuevo2 = pd.DataFrame({'X': x_nuevo.iloc[:, i]})
+                y_nuevo = recta_regresion(x, Y, x_nuevo2)
+                axes[i].scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20) 
 
+            axes[i].set_xlabel(X.columns[i])
+            axes[i].set_ylabel(Y.name)
+            axes[i].legend()
+
+        plt.tight_layout()
+       
     frame_graficas = tk.Frame(root)
-    frame_graficas.place(x=50, y=430) 
-
-    canvas_graficas = tk.Canvas(frame_graficas, bg='white', width=ancho_root - 100, height=300)
+    frame_graficas.place(x=50, y=400) 
+    canvas_graficas = tk.Canvas(frame_graficas, bg='white', width=root.winfo_screenwidth(), height=400)
     canvas_graficas.pack(side='top', fill='both', expand=True)
 
     frame_interior = tk.Frame(canvas_graficas)
@@ -300,10 +316,7 @@ def imprimir_datos(X, Y, x_nuevo=None):
     scrollbar_x_graficas.pack(side='bottom', fill='x')
     canvas_graficas.configure(xscrollcommand=scrollbar_x_graficas.set)
 
-    def configurar_scroll_region(event):
-        canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all'))
-
-    frame_interior.bind('<Configure>', configurar_scroll_region)
+    frame_interior.bind('<Configure>', lambda: configurar_scroll_region(canvas_graficas))
 
     canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
 
@@ -325,16 +338,15 @@ def imprimir_datos(X, Y, x_nuevo=None):
         canvas_fig.draw()
         canvas_fig.get_tk_widget().pack(side='left', fill='both', expand=True)
 
-    plt.close('all')
+    
 
-def archivo_bien():
+def cargar_archivo():
     limpiar_interfaz()
     crear_interfaz()
     archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx")])
     if archivo:
         cargar_datos(archivo)
-        cargar_archivo_btn.place(x=680,y=7)
-        cargar_modelo_btn.place(x=800,y=7)
+        
 
 def cerrar_programa():
     root.destroy()
@@ -342,14 +354,6 @@ def cerrar_programa():
 def destruir_widgets():
     for widget in root.winfo_children():
         widget.destroy()
-def cargar_archivo():
-  
-    respuesta = messagebox.askyesno("Cargar otro archivo", "¿Desea cargar un archivo?")
-    if respuesta:
-        
-       archivo_bien()
-    
-
 
 def limpiar_interfaz():
     for widget in root.winfo_children():
@@ -375,7 +379,7 @@ def mostrar_modelo(regresion):
     label_modelo.pack(padx=10, pady=10)
     
     # Botón para cerrar el Frame del modelo y volver a mostrar los botones
-    cerrar_btn = tk.Button(frame_modelo, text="Cerrar", command=lambda: [frame_modelo.destroy(), cargar_archivo_btn.place(x=500, y=7), cargar_modelo_btn.place(x=600, y=7)])
+    cerrar_btn = tk.Button(frame_modelo, text="Cerrar", command=lambda: [frame_modelo.destroy()])
     cerrar_btn.pack()
     
 
