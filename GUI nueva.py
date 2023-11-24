@@ -32,6 +32,7 @@ def crear_interfaz(root):
     cargar_archivo_btn.place(x=800,y=7)
 
     regresion=None
+    
     cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command= lambda: cargar_regresion(resultado_label,regresion))
     cargar_modelo_btn.place(x=900,y=7)
     
@@ -174,13 +175,14 @@ def cargar_datos(root,archivo):
 def calcular_regresion_click(root,mis_datos,variables_x,variable_y_seleccionada_radio):
     plt.close('all') 
 
-    x,y=regresion_gui(mis_datos,variables_x,variable_y_seleccionada_radio)
+    x,y,m,n,R=regresion_gui(mis_datos,variables_x,variable_y_seleccionada_radio)
     x_seleccionadas=x.columns.tolist()
     boton_predicciones(root,x_seleccionadas)
     #calcular_predicciones_btn.place(x=20, y=800)
     root.update()
     
     imprimir_datos(x, y)
+    boton_descargar(root,m,n,R)
     
 def regresion_gui(mis_datos,variables_x,variable_y_seleccionada_radio):
     width_of_label=400
@@ -205,9 +207,9 @@ def regresion_gui(mis_datos,variables_x,variable_y_seleccionada_radio):
     x_coordinate = (width_of_label) / 2  
     resultado_label.place_configure(x=x_coordinate)
     resultado_label.lift()
-    return x,y
+    return x,y,m,n,R
 
-def boton_descargar(root):
+def boton_descargar(root,m,n,R):
     descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R))
     descargar_modelo_button.place(x=130,y=395)
 
