@@ -8,12 +8,10 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
 from regresionsimplemultiple import *
 from claseRegresion import Regresion
-import pickle
 from carga_guardado import cargar_regresion,guardar_regresion,leer_archivos
+from regresionsimplemultiple import imprimir_datos
 def crear_interfaz():
     global resultado_label
-
-    
     ancho_root = root.winfo_screenwidth()
     altura_pantalla = root.winfo_screenheight()
     
@@ -33,13 +31,14 @@ def crear_interfaz():
     #calcular_predicciones_btn.place_forget()
     cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=cargar_archivo)
     cargar_archivo_btn.place(x=800,y=7)
-    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command= lambda: cargar_regresion(resultado_label))
+    regresion=None
+    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command= lambda: cargar_regresion(resultado_label,regresion))
     cargar_modelo_btn.place(x=900,y=7)
     
 def boton_predicciones(x_seleccionadas):
     calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(x_seleccionadas))
     return calcular_predicciones_btn
-    
+'''    
 def eliminar_frame_blanco():
     global frame_blanco
     
@@ -50,7 +49,7 @@ def crear_frame_blanco():
     global frame_blanco
     
     frame_blanco = tk.Frame(root, bg='white')
-    frame_blanco.place(x=0, y=840, width=10000, height=30)
+    frame_blanco.place(x=0, y=840, width=10000, height=30)'''
 
 def calcular_predicciones_click(x_seleccionadas):
     global cuadros_texto
@@ -88,7 +87,7 @@ def calcular_predicciones_click(x_seleccionadas):
         cuadros_texto.append(entry_variable) 
 
     canvas_cuadros_texto.bind("<Configure>", lambda e: canvas_cuadros_texto.configure(scrollregion=canvas_cuadros_texto.bbox("all")))
-    eliminar_frame_blanco()
+    #eliminar_frame_blanco()
 
 def cargar_datos(archivo):
     
@@ -193,7 +192,7 @@ def cargar_datos(archivo):
     boton_calculo.place(x=700, y=325)
 
 def calcular_regresion_click(variables_x,variable_y_seleccionada_radio):
-    crear_frame_blanco()
+    #crear_frame_blanco()
     width_of_label=400
     
     plt.close('all') 
@@ -209,8 +208,6 @@ def calcular_regresion_click(variables_x,variable_y_seleccionada_radio):
         resultado_label.lift()
         #calcular_predicciones_btn.place_forget()
     
-    
-
     x = mis_datos[x_seleccionadas]
     y = mis_datos[y_seleccionada]
 
@@ -240,30 +237,14 @@ def seleccionar_variable_y(variable):
     global variable_y_seleccionada
     variable_y_seleccionada = variable
 
-'''def guardar_regresion(m,n,R):
-    
-    texto = simpledialog.askstring("Descripción", "Ingrese un texto que desee guardar con los datos de la regresión:")
-    
-    regresion=Regresion(m,n,texto,R)
-    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
-    
-    if archivo:
-        with open(archivo,'wb') as archivo:
-            pickle.dump(regresion,archivo)'''
-
-
-def configurar_scroll_region(canvas_graficas):
-    canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all'))
-
-
-def configurar_scroll_region(canvas_graficas):
-    canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all'))
+'''def configurar_scroll_region(canvas_graficas):
+    canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all'))'''
 
 def imprimir_datos(X, Y, x_nuevo=None):
     n=X.shape[1]
     n = X.shape[1] 
 
-    fig, axes = plt.subplots(1, n, figsize=(8 * n, 6))
+    _, axes = plt.subplots(1, n, figsize=(8 * n, 6))
 
     if n == 1:
         axes = [axes] 
@@ -286,19 +267,18 @@ def imprimir_datos(X, Y, x_nuevo=None):
     plt.tight_layout()
        
     frame_graficas = tk.Frame(root)
-    frame_graficas.place(x=50, y=400) 
+    frame_graficas.place(x=50, y=450) 
     canvas_graficas = tk.Canvas(frame_graficas, bg='white', width=root.winfo_screenwidth(), height=400)
     canvas_graficas.pack(side='top', fill='both', expand=True)
 
     frame_interior = tk.Frame(canvas_graficas)
     canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
 
-
     scrollbar_x_graficas = ttk.Scrollbar(frame_graficas, orient='horizontal', command=canvas_graficas.xview)
     scrollbar_x_graficas.pack(side='bottom', fill='x')
     canvas_graficas.configure(xscrollcommand=scrollbar_x_graficas.set)
 
-    frame_interior.bind('<Configure>', lambda: configurar_scroll_region(canvas_graficas))
+    frame_interior.bind('<Configure>', lambda e: canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all')))
 
     canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
 
@@ -320,7 +300,6 @@ def imprimir_datos(X, Y, x_nuevo=None):
         canvas_fig.draw()
         canvas_fig.get_tk_widget().pack(side='left', fill='both', expand=True)
 
-    
 
 def cargar_archivo():
     limpiar_interfaz()
