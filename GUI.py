@@ -158,6 +158,7 @@ def variables():
     return variables_frame_x,variables_frame_y
 
 def texto_label_ruta():
+
     ruta_label = ttk.Label(window, text="Ruta del archivo: ")
     ruta_label.grid(row=6, columnspan=2, sticky="nsew")  # sticky para expandir en todas las direcciones
     return ruta_label
@@ -167,6 +168,7 @@ def botones(window,variables_frame_x,variables_frame_y):
     cargar_archivo_button.grid(row=5, column=0, sticky="nsew")  # sticky for expanding in all directions
 
     cargar_modelo_button = ttk.Button(window, text="Cargar Modelo", command=lambda: cargar_regresion(resultado_label))
+
     cargar_modelo_button.grid(row=5, column=1, sticky="nsew")  # sticky for expanding in all directions
 
     calcular_button = ttk.Button(window, text="Calcular Regresión", command=calcular_regresion_click)

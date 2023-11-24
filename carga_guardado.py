@@ -126,6 +126,15 @@ def guardar_regresion(X,Y):
         with open(archivo,'wb') as archivo:
             pickle.dump(regresion,archivo)
 
+def guardar_regresion(m,n,R):
+    texto = simpledialog.askstring("Descripción", "Ingrese un texto que desee guardar con los datos de la regresión:")
+    regresion=Regresion(m,n,texto,R)
+    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    
+    if archivo:
+        with open(archivo,'wb') as archivo:
+            pickle.dump(regresion,archivo)
+
 #buscar contiene el nombre de la regresió que se desea cargar
 '''def cargar_regresion():
     archivo=str(input('Ingrese la ruta completa del archivo en el que desea cargar los datos\n'))
@@ -136,17 +145,19 @@ def guardar_regresion(X,Y):
             print("Objeto no encontrado en el archivo.")
     return regresion'''
 
-def cargar_regresion():
-    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+def cargar_regresion(label,regresion):
+    #archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    archivo = filedialog.askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
     if archivo:
         with open(archivo, 'rb') as archivo:
             try:
                 
                 regresion = pickle.load(archivo)
+                label.config(text=regresion)
             except EOFError:
-                print("Objeto no encontrado en el archivo.")
+                label.config(text="Objeto no encontrado en el archivo.")
         
-    return regresion
+    #return regresion
 
 if __name__=='__main__':
     df=leer_archivos('C:/Users/alexe/OneDrive/Escritorio/IS/housing.db')
