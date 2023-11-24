@@ -32,7 +32,7 @@ def crear_interfaz(root):
     cargar_archivo_btn.place(x=800,y=7)
 
     regresion=None
-    
+
     cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command= lambda: cargar_regresion(resultado_label,regresion))
     cargar_modelo_btn.place(x=900,y=7)
     
@@ -152,8 +152,8 @@ def seleccionar_y(root,columnas_numericas):
     variable_y_seleccionada_radio = tk.StringVar()
     for col in columnas_numericas:
 
-        radio_y = ttk.Radiobutton(variables_frame_y, text=col, variable=variable_y_seleccionada_radio, value=col,
-                                    command=lambda col=col: seleccionar_variable_y(col))
+        radio_y = ttk.Radiobutton(variables_frame_y, text=col, variable=variable_y_seleccionada_radio, value=col)
+    
         radio_y.pack(side=tk.LEFT)
     return variable_y_seleccionada_radio
 
@@ -212,10 +212,6 @@ def regresion_gui(mis_datos,variables_x,variable_y_seleccionada_radio):
 def boton_descargar(root,m,n,R):
     descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R))
     descargar_modelo_button.place(x=130,y=395)
-
-def seleccionar_variable_y(variable):
-    global variable_y_seleccionada
-    variable_y_seleccionada = variable
 
 def imprimir_datos(X, Y, x_nuevo=None):
     n=X.shape[1]
