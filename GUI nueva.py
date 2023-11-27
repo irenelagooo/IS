@@ -181,9 +181,33 @@ def calcular_regresion_click(root,mis_datos,variables_x,variable_y_seleccionada_
     #calcular_predicciones_btn.place(x=20, y=800)
     root.update()
     
-    imprimir_datos(x, y)
+    imprimir_graficas(x,y)
+
     boton_descargar(root,m,n,R)
-    
+
+def imprimir_graficas(x,y):
+    fig=imprimir_datos(x, y)
+    frame_graficas = tk.Frame(root)
+    frame_graficas.place(x=50, y=450) 
+    canvas_graficas = tk.Canvas(frame_graficas, bg='white', width=root.winfo_screenwidth(), height=400)
+    canvas_graficas.pack(side='top', fill='both', expand=True)
+
+    frame_interior = tk.Frame(canvas_graficas)
+    canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
+
+    scrollbar_x_graficas = ttk.Scrollbar(frame_graficas, orient='horizontal', command=canvas_graficas.xview)
+    scrollbar_x_graficas.pack(side='bottom', fill='x')
+    canvas_graficas.configure(xscrollcommand=scrollbar_x_graficas.set)
+
+    frame_interior.bind('<Configure>', lambda e: canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all')))
+
+    canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
+    canvas_fig = FigureCanvasTkAgg(fig, master=frame_interior)
+    canvas_fig.draw()
+    canvas_fig.get_tk_widget().pack(side='left', fill='both', expand=True)
+
+
+
 def regresion_gui(mis_datos,variables_x,variable_y_seleccionada_radio):
     width_of_label=400
     x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
@@ -213,49 +237,12 @@ def boton_descargar(root,m,n,R):
     descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R))
     descargar_modelo_button.place(x=130,y=395)
 
-def imprimir_datos(X, Y, x_nuevo=None):
-    n=X.shape[1]
-    n = X.shape[1] 
 
-    _, axes = plt.subplots(1, n, figsize=(8 * n, 6))
-
-    if n == 1:
-        axes = [axes] 
-        
-    for i in range(n):
-        x = pd.DataFrame({'X': X.iloc[:, i]})  # x tiene que ser un DataFrame, no DataSeries
-        recta = recta_regresion(x, Y)
-        axes[i].scatter(X.iloc[:, i], Y, color='blue', label=f'Datos de entrenamiento', s=1)
-        axes[i].plot(X.iloc[:, i], recta, color='black', label=f'Recta de Regresión', linewidth=1)
-
-        if x_nuevo is not None:
-            x_nuevo2 = pd.DataFrame({'X': x_nuevo.iloc[:, i]})
-            y_nuevo = recta_regresion(x, Y, x_nuevo2)
-            axes[i].scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20) 
-
-        axes[i].set_xlabel(X.columns[i])
-        axes[i].set_ylabel(Y.name)
-        axes[i].legend()
-
-    plt.tight_layout()
+   
        
-    frame_graficas = tk.Frame(root)
-    frame_graficas.place(x=50, y=450) 
-    canvas_graficas = tk.Canvas(frame_graficas, bg='white', width=root.winfo_screenwidth(), height=400)
-    canvas_graficas.pack(side='top', fill='both', expand=True)
+    
 
-    frame_interior = tk.Frame(canvas_graficas)
-    canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
-
-    scrollbar_x_graficas = ttk.Scrollbar(frame_graficas, orient='horizontal', command=canvas_graficas.xview)
-    scrollbar_x_graficas.pack(side='bottom', fill='x')
-    canvas_graficas.configure(xscrollcommand=scrollbar_x_graficas.set)
-
-    frame_interior.bind('<Configure>', lambda e: canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all')))
-
-    canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
-
-    for i in range(n):
+'''    for i in range(n):
         fig_plt = plt.figure(figsize=(6, 4))
         ax = fig_plt.add_subplot(111)
         ax.scatter(X.iloc[:, i], Y, color='blue', label=f'Datos de entrenamiento', s=1)
@@ -269,9 +256,7 @@ def imprimir_datos(X, Y, x_nuevo=None):
         ax.set_ylabel(Y.name)
         ax.legend()
 
-        canvas_fig = FigureCanvasTkAgg(fig_plt, master=frame_interior)
-        canvas_fig.draw()
-        canvas_fig.get_tk_widget().pack(side='left', fill='both', expand=True)
+        '''
 
 
 def cargar_archivo(root):
