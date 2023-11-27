@@ -42,8 +42,8 @@ def boton_predicciones(root,x_seleccionadas):
     
 
 def calcular_predicciones_click(root,x_seleccionadas):
-    for entry in cuadros_texto:
-        entry.destroy()
+    '''for entry in cuadros_texto:
+        entry.destroy()'''
     
     cuadros_texto = [] 
     
