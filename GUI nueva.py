@@ -10,6 +10,7 @@ from regresionsimplemultiple import *
 from claseRegresion import Regresion
 from carga_guardado import cargar_regresion,guardar_regresion,leer_archivos
 from regresionsimplemultiple import imprimir_datos
+
 def crear_interfaz(root):
     global resultado_label
     ancho_root = root.winfo_screenwidth()
