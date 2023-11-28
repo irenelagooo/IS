@@ -54,28 +54,35 @@ def formula_recta(m,n):
         r+=f'{s}{i:.3f}x{x}'
     return f"y={r}"
 
-def predicciones_modelo_cargado(m, n, x):
+def predicciones(m, n, x):
     y=n
     for i in m:
         y+=i*x
     return y
 
+def hacer_recta(m,n,x):
+    y=m*x+n
+    return y
+
 def imprimir_datos(X, Y, x_nuevo=None):
     n = X.shape[1] 
     fig, axes = plt.subplots(1, n, figsize=(8 * n, 6))
-    
+    recta = recta_regresion(X, Y)
+    lista=datos_regresion(X,Y)
+    n0=lista[-1]
+
     if n == 1: axes = [axes] 
     
     for i in range(n):
-        x = pd.DataFrame({'X': X.iloc[:, i]})  # x tiene que ser un DataFrame, no DataSeries
-        recta = recta_regresion(x, Y)
+        m=lista[i]
+        recta=hacer_recta(m,n0,X.iloc[:,i])
         axes[i].scatter(X.iloc[:, i], Y, color='blue', label=f'Datos de entrenamiento', s=1)
         axes[i].plot(X.iloc[:, i], recta, color='black', label=f'Recta de Regresión', linewidth=1)
 
-        if x_nuevo is not None:
+        '''if x_nuevo is not None:
             x_nuevo2 = pd.DataFrame({'X': x_nuevo.iloc[:, i]})
             y_nuevo = recta_regresion(x, Y, x_nuevo2)
-            axes[i].scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20) 
+            axes[i].scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20) '''
 
         axes[i].set_xlabel(X.columns[i])
         axes[i].set_ylabel(Y.name)
