@@ -84,7 +84,6 @@ def imprimir_datos(X, Y):
         axes[i].legend()
 
     plt.tight_layout()
-    plt.show()
     return fig
 
 if __name__ == '__main__':

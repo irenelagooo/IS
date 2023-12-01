@@ -33,9 +33,6 @@ def crear_interfaz(root):
     cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=lambda: cargar_regresion(resultado_label, regresion))
     cargar_modelo_btn.place(x=900, y=7)
 
-    # Puedes devolver resultado_label si es necesario en otros lugares del código
-    return resultado_label
-
     
 def boton_predicciones(root,x_seleccionadas):
     calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(root,x_seleccionadas))
@@ -244,27 +241,6 @@ def imprimir_graficas(x,y):
 def boton_descargar(root,m,n,R):
     descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R))
     descargar_modelo_button.place(x=300,y=395)
-
-
-   
-       
-    
-
-'''    for i in range(n):
-        fig_plt = plt.figure(figsize=(6, 4))
-        ax = fig_plt.add_subplot(111)
-        ax.scatter(X.iloc[:, i], Y, color='blue', label=f'Datos de entrenamiento', s=1)
-        ax.plot(X.iloc[:, i], recta, color='black', label=f'Recta de Regresión', linewidth=1)
-        if x_nuevo is not None:
-            x_nuevo2 = pd.DataFrame({'X': x_nuevo.iloc[:, i]})
-            y_nuevo = recta_regresion(x, Y, x_nuevo2)
-            ax.scatter(x_nuevo2, y_nuevo, color='red', label=f'Predicciones', s=20)
-
-        ax.set_xlabel(X.columns[i])
-        ax.set_ylabel(Y.name)
-        ax.legend()
-
-        '''
 
 
 def cargar_archivo(root):
