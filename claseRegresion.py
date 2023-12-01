@@ -12,7 +12,7 @@ class Regresion:
 
     def __repr__(self) -> str:
         
-        return f"\nrecta: {formula_recta(self.m,self.n)}, bondad_del_ajuste: {self.bondad_del_ajuste}"
+        return f"\nrecta: {formula_recta(self.m,self.n)}, bondad_del_ajuste: {self.bondad_del_ajuste}, Descripción: {self.texto}"
         #serializar objeto (guardar y recuperar)
 
 if __name__=='__main__':

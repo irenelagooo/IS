@@ -12,6 +12,7 @@ from carga_guardado import cargar_regresion,guardar_regresion,leer_archivos
 from regresionsimplemultiple import imprimir_datos
 
 def crear_interfaz(root):
+    global resultado_label
     ancho_root = root.winfo_screenwidth()
     altura_pantalla = root.winfo_screenheight()
     
@@ -25,15 +26,17 @@ def crear_interfaz(root):
     resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
     resultado_label.place(x=500, y=400)
 
+ 
+
     cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=lambda: cargar_archivo(root))
-    cargar_archivo_btn.place(x=800, y=7)
+    cargar_archivo_btn.place(x=800,y=7)
+
 
     regresion = None
 
     cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=lambda: cargar_regresion(resultado_label, regresion))
     cargar_modelo_btn.place(x=900, y=7)
 
-    
 def boton_predicciones(root,x_seleccionadas):
     calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(root,x_seleccionadas))
     calcular_predicciones_btn.place(x=20, y=875)
@@ -116,7 +119,7 @@ def seleccionar_x(root,columnas_numericas):
     seleccionar_var_x_label.place(x=100, y=300)
 
     canvas_x = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_x.place(x=300, y=290, width=ancho_root-310)
+    canvas_x.place(x=300, y=300, width=ancho_root-310)
 
     variables_frame_x = tk.Frame(canvas_x)
     scrollbar_x = ttk.Scrollbar(root, orient="horizontal", command=canvas_x.xview)
@@ -142,7 +145,7 @@ def seleccionar_y(root,columnas_numericas):
     seleccionar_var_y_label.place(x=100, y=350)
 
     canvas_y = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_y.place(x=300, y=330, width=ancho_root-310)
+    canvas_y.place(x=300, y=350, width=ancho_root-310)
 
     variables_frame_y = tk.Frame(canvas_y)
     scrollbar_y = ttk.Scrollbar(root, orient="horizontal", command=canvas_y.xview)
@@ -176,48 +179,25 @@ def cargar_datos(root,archivo):
     boton_calculo = tk.Button(root, text="Calcular Regresión", command= lambda: calcular_regresion_click(root,mis_datos,variables_x,variable_y_seleccionada_radio))
     boton_calculo.place(x=100, y=395)
 
-def calcular_regresion_click(root, mis_datos, variables_x, variable_y_seleccionada_radio):
+def calcular_regresion_click(root,mis_datos,variables_x,variable_y_seleccionada_radio):
     plt.close('all') 
 
-    resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
-    resultado_label.place(x=500, y=400)  # Asegúrate de ajustar las coordenadas según tus necesidades
-
-    x, y, m, n, R = regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label)
-    x_seleccionadas = x.columns.tolist()
-    boton_predicciones(root, x_seleccionadas)
+    x,y,m,n,R=regresion_gui(mis_datos,variables_x,variable_y_seleccionada_radio)
+    x_seleccionadas=x.columns.tolist()
+    boton_predicciones(root,x_seleccionadas)
+    #calcular_predicciones_btn.place(x=20, y=800)
     root.update()
     
-    imprimir_graficas(x, y)
+    imprimir_graficas(x,y)
 
-    boton_descargar(root, m, n, R)
-
-def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label):
-    width_of_label = 400
-    x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
-
-    y_seleccionada = variable_y_seleccionada_radio.get()
-
-    if not x_seleccionadas or not y_seleccionada:
-        resultado_label.config(text="Error: Debes seleccionar al menos una variable X e Y")
-        x_coordinate = (width_of_label) / 2 
-        resultado_label.lift()
-
-    x = mis_datos[x_seleccionadas]
-    y = mis_datos[y_seleccionada]
-    l = datos_regresion(x, y)
-    n = l[-1]
-    m = l[:-1]
-    R = bondad_ajuste(x, y)
-    r = formula_recta(m, n)
-    resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
-    x_coordinate = (width_of_label) / 2  
-    resultado_label.lift()
-    return x, y, m, n, R
-
+    boton_descargar(root,m,n,R)
 
 def imprimir_graficas(x,y):
     fig=imprimir_datos(x, y)
+    fig.set_figheight(5)  # Ajusta el alto de la figura a 3 pulgadas
+
     frame_graficas = tk.Frame(root)
+    
     frame_graficas.place(x=50, y=450) 
     canvas_graficas = tk.Canvas(frame_graficas, bg='white', width=root.winfo_screenwidth(), height=400)
     canvas_graficas.pack(side='top', fill='both', expand=True)
@@ -237,6 +217,29 @@ def imprimir_graficas(x,y):
     canvas_fig.get_tk_widget().pack(side='left', fill='both', expand=True)
 
 
+
+def regresion_gui(mis_datos,variables_x,variable_y_seleccionada_radio):
+    width_of_label=400
+    x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
+
+    y_seleccionada = variable_y_seleccionada_radio.get()
+
+    if not x_seleccionadas or not y_seleccionada:
+        resultado_label.config(text="Error: Debes seleccionar al menos una variable X e Y")
+        x_coordinate = (width_of_label) / 2 
+        resultado_label.lift()
+
+    x = mis_datos[x_seleccionadas]
+    y = mis_datos[y_seleccionada]
+    l = datos_regresion(x, y)
+    n = l[-1]
+    m = l[:-1]
+    R = bondad_ajuste(x, y)
+    r = formula_recta(m, n)
+    resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
+    x_coordinate = (width_of_label) / 2  
+    resultado_label.lift()
+    return x,y,m,n,R
 
 def boton_descargar(root,m,n,R):
     descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R))

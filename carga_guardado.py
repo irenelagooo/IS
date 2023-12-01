@@ -156,7 +156,6 @@ def cargar_regresion(label,regresion):
                 label.config(text=regresion)
             except EOFError:
                 label.config(text="Objeto no encontrado en el archivo.")
-        
     #return regresion
 
 if __name__=='__main__':
