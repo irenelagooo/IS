@@ -4,19 +4,15 @@ import matplotlib.pyplot as plt
 def datos_regresion(X, Y):
     n=X.shape[1]
     y_media = Y.mean()
-    x_media=[]
-    for i in range(n):
-        x=X.iloc[:, i]
-        x_media.append(x.mean())
     b = []
     b0 = y_media
     
     for i in range(n):
-        numerador = ((X.iloc[:, i] - x_media[i]) * (Y - y_media)).sum()
-        denominador = ((X.iloc[:, i] - x_media[i])**2).sum()
+        numerador = ((X.iloc[:, i] - X.iloc[:, i].mean()) * (Y - y_media)).sum()
+        denominador = ((X.iloc[:, i] - X.iloc[:, i].mean())**2).sum()
         k = numerador / denominador
         b.append(k)
-        b0 -= k * x_media[i]
+        b0 -= k * X.iloc[:, i].mean()
     b.append(b0)
     return b
 
@@ -98,4 +94,4 @@ if __name__ == '__main__':
     imprimir_datos(X, Y)'''
     m=datos_regresion(X,Y)[:-1]
     n=datos_regresion(X,Y)[-1]
-    print(predicciones(m,n,x_nuevo))
+    print(m)

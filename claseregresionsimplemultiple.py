@@ -16,8 +16,12 @@ class CalcularRegresion(ABC):
     
     def datos_regresion(self):
         pass
+
     def get_pendiente(self):
         return self.m
+    
+    def get_ordenada(self):
+        return self.n
 
 class RegresionSimple(CalcularRegresion):
     def __init__(self,x,y):
@@ -63,7 +67,6 @@ class RegresionMultiple(CalcularRegresion):
         return y
     
     def imprimir(self):
-        
         long = self.x.shape[1] 
         fig, axes = plt.subplots(1, long, figsize=(8 * long, 6))
         recta = self.hacer_regresion()
@@ -81,24 +84,18 @@ class RegresionMultiple(CalcularRegresion):
         return fig
     
     def datos_regresion(self):
-        long=self.x.shape[1]
+        n=self.x.shape[1]
         y_media = self.y.mean()
-        x_media=[]
-        for i in range(long):
-            x=self.x.iloc[:, i]
-            x_media.append(x.mean())
-        b = []
-        b0 = y_media
+        self.m = []
+        self.n = y_media
         
-        for i in range(long):
-            numerador = ((self.x.iloc[:, i] - x_media[i]) * (self.y - y_media)).sum()
-            denominador = ((self.x.iloc[:, i] - x_media[i])**2).sum()
+        for i in range(n):
+            numerador = ((self.x.iloc[:, i] - self.x.iloc[:, i].mean()) * (self.y - y_media)).sum()
+            denominador = ((self.x.iloc[:, i] - self.x.iloc[:, i].mean())**2).sum()
             k = numerador / denominador
-            b.append(k)
-            b0 -= k * x_media[i]
-        self.m=b
-        self.n=b0
-    
+            self.m.append(k)
+            self.n -= k * self.x.iloc[:, i].mean()
+
 if __name__ == '__main__':
     x = pd.DataFrame({'X': [1, 2, 3, 4, 5]})
     y=pd.DataFrame({'Y': [2, 4, 5, 4, 5]})
