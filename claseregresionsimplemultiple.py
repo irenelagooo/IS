@@ -7,13 +7,15 @@ class CalcularRegresion(ABC):
         self.y=y.iloc[:,0]
         self.m=None
         self.n=None
-
+        
+    @abstractmethod
     def imprimir(self):
         pass
-
+    @abstractmethod 
     def hacer_regresion(self):
         pass
     
+    @abstractmethod 
     def datos_regresion(self):
         pass
 
