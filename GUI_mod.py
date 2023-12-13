@@ -34,14 +34,20 @@ def crear_interfaz(root):
     cargar_modelo_btn.place(x=900, y=7)
 
     
-def boton_predicciones(root,x_seleccionadas):
-    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(root,x_seleccionadas))
+def boton_predicciones(root,x_seleccionadas,m,n):
+    valores_x=calcular_predicciones_cuadros(root,x_seleccionadas)
+    x=[i.get() for i in valores_x]
+    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,x))
     calcular_predicciones_btn.place(x=20, y=875)
     
+def calcular_predicciones_click(m,n,x):
+    prediccion=predicciones(m,n,x)
+    prediccion_label = ttk.Label(root, text=f"Valor: {prediccion}", style="Boton.TLabel")
+    prediccion_label.place(x=100, y=875)
 
-def calcular_predicciones_click(root,x_seleccionadas):
+def calcular_predicciones_cuadros(root,x_seleccionadas):
     ancho_root = root.winfo_screenwidth()
-
+    
     '''for entry in cuadros_texto:
         entry.destroy()'''
     
@@ -49,7 +55,7 @@ def calcular_predicciones_click(root,x_seleccionadas):
     
     canvas_cuadros_texto = tk.Canvas(root, bd=0, highlightthickness=0)
     canvas_cuadros_texto.place(x=20, y=925, width=ancho_root-50)
-    
+    #925
     frame_cuadros_texto = tk.Frame(canvas_cuadros_texto)
     canvas_cuadros_texto.create_window((0, 0), window=frame_cuadros_texto, anchor='nw')
     
@@ -59,19 +65,20 @@ def calcular_predicciones_click(root,x_seleccionadas):
     
     frame_cuadros_texto.bind("<Configure>", lambda e: canvas_cuadros_texto.configure(scrollregion=canvas_cuadros_texto.bbox("all")))
     
-    for var in x_seleccionadas:
-        frame_variable = tk.Frame(frame_cuadros_texto)
-        frame_variable.pack(side=tk.LEFT, padx=5)  
-        
-        label_variable = tk.Label(frame_variable, text=f"Variable '{var}':")
-        label_variable.pack(side=tk.LEFT, padx=5)
-        
-        entry_variable = tk.Entry(frame_variable)
-        entry_variable.pack(side=tk.LEFT, padx=5)
-        
-        cuadros_texto.append(entry_variable) 
+    #for var in x_seleccionadas:
+    frame_variable = tk.Frame(frame_cuadros_texto)
+    frame_variable.pack(side=tk.LEFT, padx=5)  
+    
+    label_variable = tk.Label(frame_variable, text=f"Variable :")
+    label_variable.pack(side=tk.LEFT, padx=5)
+    
+    entry_variable = tk.Entry(frame_variable)
+    entry_variable.pack(side=tk.LEFT, padx=5)
+
+    cuadros_texto.append(entry_variable)
 
     canvas_cuadros_texto.bind("<Configure>", lambda e: canvas_cuadros_texto.configure(scrollregion=canvas_cuadros_texto.bbox("all")))
+    return cuadros_texto
 
 def ruta_archivo(root, archivo):
     ruta_label = tk.Label(root, text=f"Ruta: {archivo}")
@@ -184,7 +191,7 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
 
     x, y, m, n, R = regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label)
     x_seleccionadas = x.columns.tolist()
-    boton_predicciones(root, x_seleccionadas)
+    boton_predicciones(root, x_seleccionadas,m,n)
     root.update()
     
     imprimir_graficas(x, y)

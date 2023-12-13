@@ -56,9 +56,9 @@ def formula_recta(m,n):
 
 def predicciones(m, n, x):
     resultado=n #ordenada en el origen
-    l=x.shape[1]
+    l=len(x)
     for i in range(l):
-        resultado+=m[i]*x.iloc[:,i] 
+        resultado+=m[i]*x[i] 
     return resultado
 
 def hacer_recta(m,n,x):
