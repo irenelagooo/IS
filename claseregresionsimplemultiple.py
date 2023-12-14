@@ -1,21 +1,28 @@
-from abc import abstractmethod,ABC
+from abc import abstractmethod,ABC,ABCMeta
 import matplotlib.pyplot as plt
 import pandas as pd
-class CalcularRegresion(ABC):
+class SingletonMeta(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            instance = super().__call__(*args, **kwargs)
+            cls._instances[cls] = instance
+        return cls._instances[cls]
+
+class CalcularRegresion(metaclass=SingletonMeta):
     def __init__(self,x,y):
         self.x=x
         self.y=y.iloc[:,0]
         self.m=None
         self.n=None
         
-    @abstractmethod
     def imprimir(self):
         pass
-    @abstractmethod 
+ 
     def hacer_regresion(self):
         pass
-    
-    @abstractmethod 
+
     def datos_regresion(self):
         pass
 
@@ -104,6 +111,7 @@ if __name__ == '__main__':
     x2= pd.DataFrame({'X': [1, 2, 3, 4, 5],'X2': [10, 29, 3, 30, 51]})
     r1=RegresionSimple(x,y)
     r2=RegresionMultiple(x2,y)
+    r1.imprimir()
     r2.imprimir()
     print(r1.get_pendiente())
     print(r2.get_pendiente())
