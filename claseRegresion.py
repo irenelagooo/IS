@@ -9,6 +9,7 @@ class Regresion:
     n:float
     texto:str
     bondad_del_ajuste:float
+    x:list
 
     def __repr__(self) -> str:
         

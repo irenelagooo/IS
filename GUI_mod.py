@@ -28,56 +28,67 @@ def crear_interfaz(root):
     cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=lambda: cargar_archivo(root))
     cargar_archivo_btn.place(x=800, y=7)
 
-    regresion = None
+    resultado_carga = None
 
-    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=lambda: cargar_regresion(resultado_label, regresion))
+    def cargar_modelo_click():
+        
+        global resultado_carga  # Necesario para modificar la variable global
+
+        resultado_carga = cargar_regresion(resultado_label)
+        m, n, x_seleccionadas=resultado_carga.m, resultado_carga.n, resultado_carga.x
+        boton_predicciones(root, x_seleccionadas,m,n)
+
+    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=cargar_modelo_click)
     cargar_modelo_btn.place(x=900, y=7)
+    
+
 
     
 def boton_predicciones(root,x_seleccionadas,m,n):
     valores_x=calcular_predicciones_cuadros(root,x_seleccionadas)
-    x=[i.get() for i in valores_x]
-    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,x))
+    #x=[i.get() for i in valores_x]
+    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,valores_x))
     calcular_predicciones_btn.place(x=20, y=875)
     
-def calcular_predicciones_click(m,n,x):
+def calcular_predicciones_click(m,n,valores_x):
+    x=[int(i.get()) for i in valores_x]
     prediccion=predicciones(m,n,x)
     prediccion_label = ttk.Label(root, text=f"Valor: {prediccion}", style="Boton.TLabel")
-    prediccion_label.place(x=100, y=875)
+    prediccion_label.place(x=200, y=875)
 
 def calcular_predicciones_cuadros(root,x_seleccionadas):
     ancho_root = root.winfo_screenwidth()
-    
-    '''for entry in cuadros_texto:
-        entry.destroy()'''
-    
+
     cuadros_texto = [] 
-    
+
     canvas_cuadros_texto = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_cuadros_texto.place(x=20, y=925, width=ancho_root-50)
-    #925
+    canvas_cuadros_texto.place(x=20, y=5, width=ancho_root-50)
+
     frame_cuadros_texto = tk.Frame(canvas_cuadros_texto)
     canvas_cuadros_texto.create_window((0, 0), window=frame_cuadros_texto, anchor='nw')
-    
+  
     scrollbar_horizontal = ttk.Scrollbar(root, orient="horizontal", command=canvas_cuadros_texto.xview)
     scrollbar_horizontal.pack(side=tk.BOTTOM, fill=tk.X)
     canvas_cuadros_texto.configure(xscrollcommand=scrollbar_horizontal.set)
-    
+   
     frame_cuadros_texto.bind("<Configure>", lambda e: canvas_cuadros_texto.configure(scrollregion=canvas_cuadros_texto.bbox("all")))
-    
-    #for var in x_seleccionadas:
-    frame_variable = tk.Frame(frame_cuadros_texto)
-    frame_variable.pack(side=tk.LEFT, padx=5)  
-    
-    label_variable = tk.Label(frame_variable, text=f"Variable :")
-    label_variable.pack(side=tk.LEFT, padx=5)
-    
-    entry_variable = tk.Entry(frame_variable)
-    entry_variable.pack(side=tk.LEFT, padx=5)
+   
+    for var in x_seleccionadas:
+        
+        frame_variable = tk.Frame(frame_cuadros_texto)
+        frame_variable.pack(side=tk.LEFT, padx=5)  
 
-    cuadros_texto.append(entry_variable)
+        label_variable = tk.Label(frame_variable, text=f"Variable {var}:")
+        label_variable.pack(side=tk.LEFT, padx=5)
 
-    canvas_cuadros_texto.bind("<Configure>", lambda e: canvas_cuadros_texto.configure(scrollregion=canvas_cuadros_texto.bbox("all")))
+        entry_variable = tk.Entry(frame_variable)
+        entry_variable.pack(side=tk.LEFT, padx=5)
+
+        cuadros_texto.append(entry_variable)
+
+    frame_cuadros_texto.update_idletasks()  # Añadir esta línea para actualizar el tamaño del frame
+    canvas_cuadros_texto.config(scrollregion=canvas_cuadros_texto.bbox("all"))
+
     return cuadros_texto
 
 def ruta_archivo(root, archivo):
@@ -196,7 +207,7 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
     
     imprimir_graficas(x, y)
 
-    boton_descargar(root, m, n, R)
+    boton_descargar(root, m, n, R, x_seleccionadas)
 
 def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label):
     width_of_label = 400
@@ -244,8 +255,8 @@ def imprimir_graficas(x,y):
 
 
 
-def boton_descargar(root,m,n,R):
-    descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R))
+def boton_descargar(root,m,n,R,x_seleccionadas):
+    descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R,x_seleccionadas))
     descargar_modelo_button.place(x=300,y=395)
 
 
