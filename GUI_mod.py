@@ -28,20 +28,14 @@ def crear_interfaz(root):
     cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=lambda: cargar_archivo(root))
     cargar_archivo_btn.place(x=800, y=7)
 
-    resultado_carga = None
-
-    def cargar_modelo_click():
-        
-        global resultado_carga  # Necesario para modificar la variable global
+    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=lambda: cargar_modelo_click(resultado_label))
+    cargar_modelo_btn.place(x=900, y=7)
+    
+def cargar_modelo_click(resultado_label):
 
         resultado_carga = cargar_regresion(resultado_label)
         m, n, x_seleccionadas=resultado_carga.m, resultado_carga.n, resultado_carga.x
         boton_predicciones(root, x_seleccionadas,m,n)
-
-    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=cargar_modelo_click)
-    cargar_modelo_btn.place(x=900, y=7)
-    
-
 
     
 def boton_predicciones(root,x_seleccionadas,m,n):
