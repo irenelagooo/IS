@@ -28,14 +28,18 @@ def crear_interfaz(root):
     cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=lambda: cargar_archivo(root))
     cargar_archivo_btn.place(x=800, y=7)
 
-    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=lambda: cargar_modelo_click(resultado_label))
+    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=lambda: cargar_modelo_click(root))
     cargar_modelo_btn.place(x=900, y=7)
     
-def cargar_modelo_click(resultado_label):
-
-        resultado_carga = cargar_regresion(resultado_label)
-        m, n, x_seleccionadas=resultado_carga.m, resultado_carga.n, resultado_carga.x
-        boton_predicciones(root, x_seleccionadas,m,n)
+    
+def cargar_modelo_click(root):
+    limpiar_interfaz()
+    crear_interfaz(root)
+    label = ttk.Label(root, text="", style="Boton.TLabel")
+    label.place(x=500, y=400)
+    resultado_carga = cargar_regresion(label)
+    m, n, x_seleccionadas=resultado_carga.m, resultado_carga.n, resultado_carga.x
+    boton_predicciones(root, x_seleccionadas,m,n)
 
     
 def boton_predicciones(root,x_seleccionadas,m,n):
@@ -56,7 +60,7 @@ def calcular_predicciones_cuadros(root,x_seleccionadas):
     cuadros_texto = [] 
 
     canvas_cuadros_texto = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_cuadros_texto.place(x=20, y=5, width=ancho_root-50)
+    canvas_cuadros_texto.place(x=20, y=925, width=ancho_root-50)
 
     frame_cuadros_texto = tk.Frame(canvas_cuadros_texto)
     canvas_cuadros_texto.create_window((0, 0), window=frame_cuadros_texto, anchor='nw')
