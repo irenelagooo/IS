@@ -23,14 +23,16 @@ def crear_interfaz(root):
     root.geometry(f"{ancho_root}x{altura_root}+{x_pos}+{y_pos}")
     
     resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
-    resultado_label.place(x=500, y=400)
+    resultado_label.place(x=500, y=415)
 
-    cargar_archivo_btn = tk.Button(root, text="Cargar Archivo", command=lambda: cargar_archivo(root))
-    cargar_archivo_btn.place(x=800, y=7)
+    frame_botones = tk.Frame(root)
+    frame_botones.pack(pady=10)
 
-    cargar_modelo_btn = tk.Button(root, text="Cargar Modelo", command=lambda: cargar_modelo_click(root))
-    cargar_modelo_btn.place(x=900, y=7)
-    
+    cargar_archivo_btn = tk.Button(frame_botones, text="Cargar Archivo", command=lambda: cargar_archivo(root))
+    cargar_archivo_btn.pack(side=tk.LEFT, padx=10)
+
+    cargar_modelo_btn = tk.Button(frame_botones, text="Cargar Modelo", command=lambda: cargar_modelo_click(root))
+    cargar_modelo_btn.pack(side=tk.LEFT, padx=10)
     
 def cargar_modelo_click(root):
     limpiar_interfaz()
@@ -91,7 +93,7 @@ def calcular_predicciones_cuadros(root,x_seleccionadas):
 
 def ruta_archivo(root, archivo):
     ruta_label = tk.Label(root, text=f"Ruta: {archivo}")
-    ruta_label.pack(anchor='nw', padx=10, pady=10)  # Ajuste en el anclaje y los márgenes
+    ruta_label.pack(anchor='nw', padx=10, pady=0)  # Ajuste en el anclaje y los márgenes
     return ruta_label
 
 
@@ -104,16 +106,13 @@ def crear_tabla(root,mis_datos):
     treeview["columns"] = tuple(mis_datos.columns)
 
     for column in mis_datos.columns:
-        treeview.heading(column, text=column)
+        treeview.heading(column, text=column )
 
     for i, row in mis_datos.iterrows():
         treeview.insert("", i, values=tuple(row))
     for col in mis_datos.columns:
         treeview.heading(col, text=col, anchor='center')  
-        treeview.column(col, anchor='center', width=150)
-    
-    treeview.heading('#0', text='', anchor='center') 
-    treeview.column('#0', width=0, anchor='center')  
+        treeview.column(col, anchor='center', width= 200)
 
     yscroll = ttk.Scrollbar(frame_tabla, orient="vertical", command=treeview.yview)
     yscroll.pack(side="right", fill="y")
@@ -123,20 +122,20 @@ def crear_tabla(root,mis_datos):
     xscroll.pack(side="bottom", fill="x")
     treeview.configure(xscrollcommand=xscroll.set)
 
-    treeview.pack()
+    treeview.pack(fill='both', expand=True)
     
 def seleccionar_x(root,columnas_numericas):
     ancho_root = root.winfo_screenwidth()
 
-    seleccionar_var_x_label = tk.Label(root, text="Selecciona variable(s) X")
-    seleccionar_var_x_label.place(x=100, y=300)
+    seleccionar_var_x_label = tk.Label(root, text="Selecciona variable(s) X:")
+    seleccionar_var_x_label.place(x=10, y=330)
 
     canvas_x = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_x.place(x=300, y=290, width=ancho_root-310)
+    canvas_x.place(x=seleccionar_var_x_label.winfo_reqwidth() + 10, y=330, width=ancho_root-310)
 
     variables_frame_x = tk.Frame(canvas_x)
     scrollbar_x = ttk.Scrollbar(root, orient="horizontal", command=canvas_x.xview)
-    scrollbar_x.place(x=300, y=317, width=ancho_root-400)
+    scrollbar_x.place(x=seleccionar_var_x_label.winfo_reqwidth() + 10, y=357, width=ancho_root-310)
     canvas_x.configure(xscrollcommand=scrollbar_x.set)
 
     variables_frame_x.bind("<Configure>", lambda e: canvas_x.configure(scrollregion=canvas_x.bbox("all")))
@@ -155,14 +154,14 @@ def seleccionar_y(root,columnas_numericas):
     ancho_root = root.winfo_screenwidth()
 
     seleccionar_var_y_label = tk.Label(root, text="Selecciona variable Y:")
-    seleccionar_var_y_label.place(x=100, y=350)
+    seleccionar_var_y_label.place(x=10, y=370)
 
     canvas_y = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_y.place(x=300, y=330, width=ancho_root-310)
+    canvas_y.place(x=seleccionar_var_y_label.winfo_reqwidth() + 23, y=370, width=ancho_root-310)
 
     variables_frame_y = tk.Frame(canvas_y)
     scrollbar_y = ttk.Scrollbar(root, orient="horizontal", command=canvas_y.xview)
-    scrollbar_y.place(x=300, y=367, width=ancho_root-400)
+    scrollbar_y.place(x=seleccionar_var_y_label.winfo_reqwidth() + 23, y=397, width=ancho_root-310)
     canvas_y.configure(xscrollcommand=scrollbar_y.set)
 
     variables_frame_y.bind("<Configure>", lambda e: canvas_y.configure(scrollregion=canvas_y.bbox("all")))
@@ -190,13 +189,13 @@ def cargar_datos(root,archivo):
     variables_x=seleccionar_x(root,columnas_numericas)
     variable_y_seleccionada_radio=seleccionar_y(root,columnas_numericas)
     boton_calculo = tk.Button(root, text="Calcular Regresión", command= lambda: calcular_regresion_click(root,mis_datos,variables_x,variable_y_seleccionada_radio))
-    boton_calculo.place(x=100, y=395)
+    boton_calculo.place(x=100, y=415)
 
 def calcular_regresion_click(root, mis_datos, variables_x, variable_y_seleccionada_radio):
     plt.close('all') 
 
     resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
-    resultado_label.place(x=500, y=400)  # Asegúrate de ajustar las coordenadas según tus necesidades
+    resultado_label.place(x=500, y=415)  
 
     x, y, m, n, R = regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label)
     x_seleccionadas = x.columns.tolist()
@@ -255,7 +254,7 @@ def imprimir_graficas(x,y):
 
 def boton_descargar(root,m,n,R,x_seleccionadas):
     descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R,x_seleccionadas))
-    descargar_modelo_button.place(x=300,y=395)
+    descargar_modelo_button.place(x=300,y=415)
 
 
 def cargar_archivo(root):
