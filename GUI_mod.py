@@ -10,6 +10,7 @@ from regresionsimplemultiple import *
 from claseRegresion import Regresion
 from carga_guardado import cargar_regresion,guardar_regresion,leer_archivos
 from regresionsimplemultiple import imprimir_datos
+import sys
 
 def crear_interfaz(root):
     ancho_root = root.winfo_screenwidth()
@@ -264,14 +265,6 @@ def cargar_archivo(root):
     archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx"),("DataBase Files", ".db")])
     if archivo:
         cargar_datos(root,archivo)
-        
-
-def cerrar_programa():
-    root.destroy()
-    
-def destruir_widgets():
-    for widget in root.winfo_children():
-        widget.destroy()
 
 def limpiar_interfaz():
     for widget in root.winfo_children():
@@ -288,14 +281,17 @@ def mostrar_modelo(regresion):
     # Mostrar el modelo dentro del Frame
     label_modelo = tk.Label(frame_modelo, text=str(regresion), font=("Arial", 12))
     label_modelo.pack(padx=10, pady=10)
-    
+
 def crear_ventana():
     root = tk.Tk()
     root.title("Regresion")
+    root.protocol("WM_DELETE_WINDOW",sys.exit)
     return root
 
 if __name__=='__main__':
     root=crear_ventana()
 
     crear_interfaz(root)
+    
     root.mainloop()
+    
