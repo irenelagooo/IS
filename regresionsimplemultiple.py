@@ -2,26 +2,22 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def datos_regresion(X, Y):
-    n=X.shape[1]
+    n = X.shape[1]
     y_media = Y.mean()
-    x_media=[]
-    for i in range(n):
-        x=X.iloc[:, i]
-        x_media.append(x.mean())
     b = []
     b0 = y_media
-    
+   
     for i in range(n):
-        numerador = ((X.iloc[:, i] - x_media[i]) * (Y - y_media)).sum()
-        denominador = ((X.iloc[:, i] - x_media[i])**2).sum()
+        numerador = ((X.iloc[:, i] - X.iloc[:, i].mean()) * (Y - y_media)).sum()
+        denominador = ((X.iloc[:, i] - X.iloc[:, i].mean())**2).sum()
         k = numerador / denominador
         b.append(k)
-        b0 -= k * x_media[i]
-    b.append(b0)
-    return b
+        b0 -= k * X.iloc[:, i].mean()
+    
+    return b, b0
 
 def mostrar_regresion(X,Y):
-    b=datos_regresion(X,Y)
+    b =datos_regresion(X,Y)
     n=len(b)
     R_cuadrado=bondad_ajuste(X,Y)
     print(f"\nCoeficiente de determinación o bondad del ajuste (R^2): {R_cuadrado}")
@@ -39,11 +35,19 @@ def recta_regresion(X,Y,x_nuevo=None):
     return resultado
 
 def bondad_ajuste(X, Y):
-    recta = recta_regresion(X, Y)
-    SST = ((Y - Y.mean())**2).sum()
-    SSR = ((recta - Y.mean())**2).sum()
-    R_cuadrado =1- SSR / SST
+    m,n=datos_regresion(X,Y)
+    pred=valor_regresion(X,m,n)
+    num = ((Y - pred)**2).sum()
+    den = ((Y - Y.mean())**2).sum()
+    R_cuadrado = 1 - (num / den)
     return R_cuadrado
+ 
+ 
+def valor_regresion(X,m,n):
+    y=n
+    for i in range(X.shape[1]):
+        y+=X.iloc[:,i]*m[i]
+    return y
 
 def formula_recta(m,n):
     x=0
