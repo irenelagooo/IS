@@ -16,22 +16,12 @@ def datos_regresion(X, Y):
     
     return b, b0
 
-def mostrar_regresion(X,Y):
-    b =datos_regresion(X,Y)
-    n=len(b)
-    R_cuadrado=bondad_ajuste(X,Y)
-    print(f"\nCoeficiente de determinación o bondad del ajuste (R^2): {R_cuadrado}")
-    print(f'\nLos datos de la regresión son:\nb0='+str(b[-1]))
-    for i in range(n-1):
-        print('b'+str(i+1),f'={b[i]}')
     
-def recta_regresion(X,Y,x_nuevo=None):
-    regresion=datos_regresion(X,Y)
-    resultado=regresion[-1] #ordenada en el origen
-    x=x_nuevo if x_nuevo is not None else X
-    n=x.shape[1]
+def recta_regresion(X,Y):
+    m,resultado=datos_regresion(X,Y)
+    n=X.shape[1]
     for i in range(n):
-        resultado+=regresion[i]*x.iloc[:,i] 
+        resultado+=m[i]*X.iloc[:,i] 
     return resultado
 
 def bondad_ajuste(X, Y):
@@ -41,7 +31,6 @@ def bondad_ajuste(X, Y):
     den = ((Y - Y.mean())**2).sum()
     R_cuadrado = 1 - (num / den)
     return R_cuadrado
- 
  
 def valor_regresion(X,m,n):
     y=n
@@ -73,14 +62,14 @@ def imprimir_datos(X, Y):
     n = X.shape[1] 
     fig, axes = plt.subplots(1, n, figsize=(8 * n, 6))
     recta = recta_regresion(X, Y)
-    lista=datos_regresion(X,Y)
-    n0=lista[-1]
+    b, b0=datos_regresion(X,Y)
+    
 
     if n == 1: axes = [axes] 
     
     for i in range(n):
-        m=lista[i]
-        recta=hacer_recta(m,n0,X.iloc[:,i])
+        m=b[i]
+        recta=hacer_recta(m,b0,X.iloc[:,i])
         axes[i].scatter(X.iloc[:, i], Y, color='blue', label=f'Datos de entrenamiento', s=1)
         axes[i].plot(X.iloc[:, i], recta, color='black', label=f'Recta de Regresión', linewidth=1)
         axes[i].set_xlabel(X.columns[i])
@@ -94,12 +83,9 @@ if __name__ == '__main__':
     X = pd.DataFrame({'X0': [1, 2, -223, 46486416, 5],'X1':[3,-4,5,6,-1],'X2':[-100,-30,-40,-1,0]})
     datos_y = pd.DataFrame({'Y': [2, 4, 5, 4, 5]})
     Y = datos_y['Y']
-    x_nuevo =pd.DataFrame({'X0': [2.5, 3.7, 1.1],'X1':[3 , 4, 5],'X2':[-20,-14,-55]})
-    '''
-    print('predicciones',recta_regresion(X,Y,x_nuevo))
-    
-    mostrar_regresion(X, Y)
-    imprimir_datos(X, Y)'''
-    m=datos_regresion(X,Y)[:-1]
-    n=datos_regresion(X,Y)[-1]
+    x_nuevo =[2,3,4]
+    print('predicciones',recta_regresion(X,Y))
+    imprimir_datos(X, Y)
+    m,n=datos_regresion(X,Y)
+    print(m,n)
     print(predicciones(m,n,x_nuevo))
