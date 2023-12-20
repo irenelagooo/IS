@@ -2,6 +2,23 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def datos_regresion(X, Y):
+
+    '''
+    Calcula la(s) pendiente(s) y ordenada en el origen de la regresión
+ 
+    Parameters
+    ----------
+    x: pd.DataFrame
+        DataFrame con las variables X
+    y: pd.series
+        columna de un DataFrame con la variable Y
+ 
+    Returns
+    -------
+    b: list
+        lista con la(s) pendiente(s) y la ordenada en el origen de la regresión
+    '''
+
     n = X.shape[1]
     y_media = Y.mean()
     b = []
@@ -39,6 +56,23 @@ def valor_regresion(X,m,n):
     return y
 
 def formula_recta(m,n):
+    '''
+    Devuelve un string con la fórmula de la recta
+ 
+    Parameters
+    ----------
+    m: float
+        pendiente
+    n: float
+        ordenada en el origen
+ 
+    Returns
+    -------
+    r: str
+        fórmula de la recta
+   
+    '''
+
     x=0
     r=f'{n:.3f}'
     for i in m:
@@ -55,10 +89,42 @@ def predicciones(m, n, x):
     return resultado
 
 def hacer_recta(m,n,x):
+    '''
+    Devuelve el valor de la variable dependiente dadas la variable independiente, la pendiente y la ordenada
+ 
+    Parameters
+    ----------
+    m: float
+        pendiente
+    n: float
+        ordenada en el origen
+    x: pd.series
+        columna de un DataFrame con la variable X
+    Returns
+    -------
+    y: pd.series
+        columna de un DataFrame con la variable Y
+    '''
+
     y=m*x+n
     return y
 
 def imprimir_datos(X, Y):
+    '''
+    Crea las gráficas de dispersión para representar la regresión
+ 
+    Parameters
+    ----------
+    x: pd.DataFrame
+        DataFrame con las variables X
+    y: pd.series
+        columna de un DataFrame con la variable Y
+    Returns
+    -------
+    fig: Figure
+        ventana en la que se dibujarán los gráficos
+    '''
+    
     n = X.shape[1] 
     fig, axes = plt.subplots(1, n, figsize=(8 * n, 6))
     recta = recta_regresion(X, Y)

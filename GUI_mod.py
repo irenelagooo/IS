@@ -13,6 +13,19 @@ from regresionsimplemultiple import imprimir_datos
 import sys
 
 def crear_interfaz(root):
+    '''
+    Crea los botones y ajustes que apareceran al iniciar la interfaz
+ 
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+ 
+    Returns
+    -------
+    None
+    '''
+
     ancho_root = root.winfo_screenwidth()
     altura_pantalla = root.winfo_screenheight()
     
@@ -44,12 +57,40 @@ def cargar_modelo_click(root):
 
     
 def boton_predicciones(root,x_seleccionadas,m,n):
+    '''
+    Crea el botón para calcular las predicciones
+ 
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    x_seleccionadas: list
+        lista con los nombres de las variables independientes
+    Returns
+    -------
+    None
+    '''
+
     valores_x=calcular_predicciones_cuadros(root,x_seleccionadas)
     #x=[i.get() for i in valores_x]
     calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,valores_x))
     calcular_predicciones_btn.place(x=20, y=875)
     
 def calcular_predicciones_click(m,n,valores_x):
+    '''
+    Crea tantos cuadros de texto como variables x haya para introducir las predicciones
+ 
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    x_seleccionadas: list
+        lista con los nombres de las variables independientes
+    Returns
+    -------
+    None
+    '''
+
     x=[int(i.get()) for i in valores_x]
     prediccion=predicciones(m,n,x)
     prediccion_label = ttk.Label(root, text=f"Valor: {prediccion}", style="Boton.TLabel")
@@ -91,13 +132,41 @@ def calcular_predicciones_cuadros(root,x_seleccionadas):
     return cuadros_texto
 
 def ruta_archivo(root, archivo):
+    '''
+    Crea una etiqueta que muestra la ruta del archivo
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    archivo: str
+        ruta del archivo seleccionado
+       
+    Returns
+    -------
+    ruta_label: Label
+        etiqueta con la ruta del archivo
+    '''
+
     ruta_label = tk.Label(root, text=f"Ruta: {archivo}")
     ruta_label.pack(anchor='nw', padx=10, pady=10)  # Ajuste en el anclaje y los márgenes
     return ruta_label
 
 
 def crear_tabla(root,mis_datos):
-    
+    '''
+    Crea un marco y configura encabezados para mostrar los datos en una tabla
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    mis_datos: DataFrame
+        dataframe con la información del archivo
+       
+    Returns
+    -------
+    None
+    '''
+
     frame_tabla = tk.Frame(root)
     frame_tabla.pack(pady=10, padx=20)
 
@@ -127,6 +196,22 @@ def crear_tabla(root,mis_datos):
     treeview.pack()
     
 def seleccionar_x(root,columnas_numericas):
+    '''
+    Muestra las variables X y crea checkbuttons para poder seleccionarlas
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    columnas_numericas: DataFrame
+        dataframe donde todas las columnas son numericas
+       
+    Returns
+    -------
+    variables_x: DataFrame
+        dataframe con booleanos que indican si se seleccionó o no cada variable
+ 
+    '''
+
     ancho_root = root.winfo_screenwidth()
 
     seleccionar_var_x_label = tk.Label(root, text="Selecciona variable(s) X")
@@ -153,6 +238,22 @@ def seleccionar_x(root,columnas_numericas):
     return variables_x
 
 def seleccionar_y(root,columnas_numericas):
+    '''
+    Muestra las variables Y y crea radio buttons para seleccionar una
+ 
+    Parameters
+    ----------
+    root: Tk
+        ventana principal de la interfaz gráfica
+    columnas_numericas: list
+        dataFrame donde todas las columnas son numéricas
+ 
+    Returns
+    -------
+    variable_y_seleccionada_radio: tk.StringVar
+        variable Y seleccionada
+    '''
+
     ancho_root = root.winfo_screenwidth()
 
     seleccionar_var_y_label = tk.Label(root, text="Selecciona variable Y:")
@@ -179,6 +280,20 @@ def seleccionar_y(root,columnas_numericas):
     return variable_y_seleccionada_radio
 
 def cargar_datos(root,archivo):
+    '''
+    Carga datos desde un archivo y llama a otras funciones para mostrar y seleccionar variables X y la variable Y y mostrar un botón para calcular la regresión
+ 
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    archivo: str
+        ruta del archivo seleccionado
+ 
+    Returns
+    -------
+    None
+    '''
 
     mis_datos = leer_archivos(archivo)
 
@@ -194,6 +309,25 @@ def cargar_datos(root,archivo):
     boton_calculo.place(x=100, y=395)
 
 def calcular_regresion_click(root, mis_datos, variables_x, variable_y_seleccionada_radio):
+    '''
+    Calcula la regresión e imprime los resultados
+ 
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    mis_datos: pd.DataFrame
+        dataFrame con la información del archivo
+    variables_x: dict
+        diccionario con booleanos que indican si se seleccionó o no cada variable X
+    variable_y_seleccionada_radio: tk.StringVar
+        variable Y seleccionada
+ 
+    Returns
+    -------
+    None
+    '''
+
     plt.close('all') 
 
     resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
@@ -209,6 +343,34 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
     boton_descargar(root, m, n, R, x_seleccionadas)
 
 def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label):
+    '''
+    Obtiene las variables x e y, la(s) pendiente(s), ordenada en el origen y bondad del ajuste
+ 
+    Parameters
+    ----------
+    mis_datos: pd.DataFrame
+        dataFrame con la información del archivo
+    variables_x: dict
+        diccionario con booleanos que indican si se seleccionó o no cada variable X
+    variable_y_seleccionada_radio: tk.StringVar
+        variable Y seleccionada
+    resultado_label: ttk.Label
+        etiqueta para mostrar resultados
+ 
+    Returns
+    -------
+    x: pd.Dataframe
+        dataframe con las variables X seleccionadas
+    y: panda.series
+        variable y seleccionada
+    m: list
+        lista con las pendientes de la regresión
+    n: float
+        ordenada en el origen
+    R: float
+        bondad del ajuste
+    '''
+
     width_of_label = 400
     x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
 
@@ -232,6 +394,21 @@ def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resulta
 
 
 def imprimir_graficas(x,y):
+    '''
+    Imprime la regresión y crea un marco para mostrar las gráfica
+ 
+    Parameters
+    ----------
+    x: pd.Dataframe
+        dataframe con las variables X
+    y: panda.series
+        variable Y
+ 
+    Returns
+    -------
+    None
+    '''
+
     fig=imprimir_datos(x, y)
     frame_graficas = tk.Frame(root)
     frame_graficas.place(x=50, y=450) 
@@ -255,11 +432,41 @@ def imprimir_graficas(x,y):
 
 
 def boton_descargar(root,m,n,R,x_seleccionadas):
+    '''
+    Crea un botón que, al pulsarlo, guardará el modelo en un archivo
+ 
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    m: list
+        lista con las pendientes de la regresión
+    n: float
+        ordenada en el origen
+    R: float
+        bondad del ajuste
+ 
+    Returns
+    -------
+    None
+    '''
+
     descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R,x_seleccionadas))
     descargar_modelo_button.place(x=300,y=395)
 
 
 def cargar_archivo(root):
+    '''
+    Carga un archivo seleccionado por el usuario y carga los datos
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+ 
+    Returns
+    -------
+    None
+    '''
     limpiar_interfaz()
     crear_interfaz(root)
     archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx"),("DataBase Files", ".db")])
@@ -267,10 +474,26 @@ def cargar_archivo(root):
         cargar_datos(root,archivo)
 
 def limpiar_interfaz():
+    '''
+    Elimina todos los widgets secundarios de la ventana principal
+ 
+    Returns
+    -------
+    None
+    '''
+
     for widget in root.winfo_children():
         widget.destroy()
 
 def borrar_grafica():
+    '''
+    Si la ventana principal tiene un marco para las gráficas, los destruye
+ 
+    Returns
+    -------
+    None
+    '''
+
     if hasattr(root, 'frame_graficas'):
         root.frame_graficas.destroy()
 
@@ -283,6 +506,15 @@ def mostrar_modelo(regresion):
     label_modelo.pack(padx=10, pady=10)
 
 def crear_ventana():
+    '''
+    Crea la ventana de la interfaz gráfica
+ 
+    Returns
+    -------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    '''
+    
     root = tk.Tk()
     root.title("Regresion")
     root.protocol("WM_DELETE_WINDOW",sys.exit)
