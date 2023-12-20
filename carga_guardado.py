@@ -19,7 +19,7 @@ def leer_archivos(path):
 
     Returns
     -------
-    df: DataFrame
+    df: pd.DataFrame
         DataFrame con los datos que se desean estudiar
     '''
     extension = path.split('.')[-1]
@@ -28,105 +28,34 @@ def leer_archivos(path):
     elif extension=='xlsx':
         df = pd.read_excel(path)
     elif extension=='db':
-        # Conectarse a la base de datos SQLite
         conn = sqlite3.connect(path)
-
-        # Crear un cursor
         cursor = conn.cursor()
-
-        # Obtener el nombre de la tabla en la base de datos
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        #table_name = cursor.fetchall()[0][0]
-
-        # Leer los datos de la tabla en un DataFrame
         df = pd.read_sql_query(f"SELECT * FROM {cursor.fetchall()[0][0]}", conn)
     return df
 
-def print_columnas_numericas(df):
-    '''
-    Imprime los nombres de las columnas con datos numericos
-
-    Parameters
-    ----------
-    df: DataFrame
-        DataFrame con los datos que se desean estudiar
-
-    Returns
-    -------
-    None
-    '''
-    print('//',end='')
-    for columna in df.columns:
-        if isinstance(df[columna].iloc[0],np.float64) or isinstance(df[columna].iloc[0],np.int64):
-            print(columna,end='//')
-
-def datos_grafica(df):
-    '''
-    Pide al usuario las columnas de datos con las que quiere realizar el estudio, y los datos de los que desea hacer la predicción.
-    Muestra la recta de regresión, los datos de las columnas y las predicciones en una gráfica
-
-    Parameters
-    ----------
-    df: DataFrame
-        DataFrame con los datos que se desean estudiar
-
-    Returns
-    -------
-    None
-    '''
-    print('Escoja una de las siguientes columnas para utilizar como variable X escribiendo su nombre por consola:')
-    print_columnas_numericas(df)
-    nombre_x=str(input('\nX='))
-    nombre_y=str(input('Ahora escoja una variable y\nY='))
-    X=pd.DataFrame({'X0':df[nombre_x]})
-    Y=df[nombre_y]
-    print('Desea hacer alguna predicción?')
-    respuesta=int(input('Escriba 1 si la respuesta es afirmativa y 0 en caso contrario: '))
-    if respuesta==1:
-        pred=input('Escriba los valores de los que desea hacer la predicción separados por comas: ').split(',') #mirar espacios
-        x_nuevo_df=pd.DataFrame({'X':[float(i) for i in pred]})
-        x_nuevo=x_nuevo_df['X']
-    else: #elif respuesta==0:???????
-        x_nuevo=None
-
-    imprimir_datos(X,Y,x_nuevo)
-    plt.show()
-
-    guardar = int(input('Desea guardar los datos de la regresión? Sí=1 No=0\n'))
-    if guardar == 1:
-        guardar_regresion(X,Y)
-
-    cargar = int(input('Desea cargar una regresión? Sí=1 No=0\n'))
-    if cargar == 1:
-        regresion=cargar_regresion()
-        print(f'La regresión cargada es la siguiente: {regresion}')
-
-'''def guardar_regresion(X,Y):
-    
-    texto=str(input('Introduzca un texto que desee que se guarde con los datos de la regresión\n'))
-    b=datos_regresion(X,Y)
-    m=b[:-1]
-    n=b[-1]
-    bondad=bondad_ajuste(X,Y)
-    regresion=Regresion(m,n,texto,bondad)
-    archivo=str(input('Ingrese la ruta completa del archivo en el que desea guardar los datos\n'))
-    with open(archivo,'wb') as archivo:
-        pickle.dump(regresion,archivo)'''
-def guardar_regresion(X,Y):
-    
-    texto = simpledialog.askstring("Descripción", "Ingrese un texto que desee guardar con los datos de la regresión:")
-    b=datos_regresion(X,Y)
-    m=b[:-1]
-    n=b[-1]
-    bondad=bondad_ajuste(X,Y)
-    regresion=Regresion(m,n,texto,bondad)
-    archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
-    
-    if archivo:
-        with open(archivo,'wb') as archivo:
-            pickle.dump(regresion,archivo)
-
 def guardar_regresion(m,n,R,x_seleccionadas):
+    '''
+    Guarda los datos de una regresión en un archivo
+
+    Parameters
+    ----------
+    m: list
+        lista de pendientes de la recta de regresion
+    n: float
+        ordenada en el origen de la recta de regresion
+    R: float
+        bondad del ajuste del modelo
+    x_seleccionadas: list
+        lista con los nombres de las variables independientes
+    y_seleccionada: str
+        nombre de la variable dependiente
+
+    Returns
+    -------
+    None
+    '''
+
     texto = simpledialog.askstring("Descripción", "Ingrese un texto que desee guardar con los datos de la regresión:")
     regresion=Regresion(m,n,texto,R,x_seleccionadas)
     archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
@@ -135,29 +64,27 @@ def guardar_regresion(m,n,R,x_seleccionadas):
         with open(archivo,'wb') as archivo:
             pickle.dump(regresion,archivo)
 
-#buscar contiene el nombre de la regresió que se desea cargar
-'''def cargar_regresion():
-    archivo=str(input('Ingrese la ruta completa del archivo en el que desea cargar los datos\n'))
-    with open(archivo, 'rb') as archivo:
-        try:
-            regresion = pickle.load(archivo)
-        except EOFError:
-            print("Objeto no encontrado en el archivo.")
-    return regresion'''
-
 def cargar_regresion(label):
-    #archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
+    '''
+    Carga los datos de una regresión desde un archivo     
+
+    Parameters
+    ----------
+    label: ttk.Label
+        etiqueta de la interfaz grafica donde se muestra la informacion cargada
+
+    Returns
+    -------
+    Regresion: class Regresion
+        objeto Regresion cargado desde el archivo
+    '''
+
     archivo = filedialog.askopenfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
     if archivo:
         with open(archivo, 'rb') as archivo:
             try:
-                
                 regresion = pickle.load(archivo)
                 label.config(text=regresion)
             except EOFError:
                 label.config(text="Objeto no encontrado en el archivo.")
         return regresion
-
-if __name__=='__main__':
-    df=leer_archivos('C:/Users/alexe/OneDrive/Escritorio/IS/housing.db')
-    datos_grafica(df)
