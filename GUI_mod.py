@@ -382,13 +382,10 @@ def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resulta
 
     x = mis_datos[x_seleccionadas]
     y = mis_datos[y_seleccionada]
-    l = datos_regresion(x, y)
-    n = l[-1]
-    m = l[:-1]
+    m, n = datos_regresion(x, y)
     R = bondad_ajuste(x, y)
     r = formula_recta(m, n)
     resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
-    x_coordinate = (width_of_label) / 2  
     resultado_label.lift()
     return x, y, m, n, R
 
