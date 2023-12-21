@@ -202,7 +202,7 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
     boton_predicciones(root, x_seleccionadas,m,n)
     root.update()
     
-    imprimir_graficas(x, y)
+    imprimir_graficas(x, y, root)
 
     boton_descargar(root, m, n, R, x_seleccionadas)
 
@@ -228,15 +228,27 @@ def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resulta
     resultado_label.lift()
     return x, y, m, n, R
 
+def borrar_canvas_grafica(root):
+    # Verificar si existen elementos gráficos y destruirlos
+    if hasattr(root, 'canvas_fig'):
+        root.canvas_fig.get_tk_widget().destroy()
+        root.frame_graficas.destroy()
 
-def imprimir_graficas(x,y):
-    fig=imprimir_datos(x, y)
+def imprimir_graficas(x, y, root):
+    # Obtener el color de fondo de la ventana
+    color_fondo_ventana = root.cget('bg')
+
+    borrar_canvas_grafica(root)
+
+    fig = imprimir_datos(x, y)
+    
     frame_graficas = tk.Frame(root)
-    frame_graficas.place(x=50, y=450) 
-    canvas_graficas = tk.Canvas(frame_graficas, bg='white', width=root.winfo_screenwidth(), height=400)
+    frame_graficas.pack(padx=50, pady=(120, 0)) 
+    canvas_graficas = tk.Canvas(frame_graficas, bg=color_fondo_ventana, width=root.winfo_screenwidth(), height=400)  # Ajuste de altura
     canvas_graficas.pack(side='top', fill='both', expand=True)
+    canvas_graficas.config(highlightthickness=0)  # Eliminar el borde del canvas
 
-    frame_interior = tk.Frame(canvas_graficas)
+    frame_interior = tk.Frame(canvas_graficas, bg=color_fondo_ventana)  # Ajustar el fondo al color de la ventana
     canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
 
     scrollbar_x_graficas = ttk.Scrollbar(frame_graficas, orient='horizontal', command=canvas_graficas.xview)
@@ -249,7 +261,10 @@ def imprimir_graficas(x,y):
     canvas_fig = FigureCanvasTkAgg(fig, master=frame_interior)
     canvas_fig.draw()
     canvas_fig.get_tk_widget().pack(side='left', fill='both', expand=True)
-
+    
+    # Guardar referencia a las gráficas para su eliminación posterior si es necesario
+    root.canvas_fig = canvas_fig
+    root.frame_graficas = frame_graficas
 
 
 def boton_descargar(root,m,n,R,x_seleccionadas):
