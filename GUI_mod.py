@@ -194,16 +194,18 @@ def cargar_datos(root,archivo):
 def calcular_regresion_click(root, mis_datos, variables_x, variable_y_seleccionada_radio):
     plt.close('all') 
 
-    resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
-    resultado_label.place(x=500, y=415)  
+    resultado_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label)), None)
 
     x, y, m, n, R = regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label)
     x_seleccionadas = x.columns.tolist()
-    boton_predicciones(root, x_seleccionadas,m,n)
+    boton_predicciones(root, x_seleccionadas, m, n)
     root.update()
-    
-    imprimir_graficas(x, y, root)
 
+    # Actualiza el texto de la etiqueta con el resultado
+    resultado_label.config(text=f"Recta regresión: {formula_recta(m, n)}, Bondad del ajuste: {R:.3f}")
+    resultado_label.lift()
+
+    imprimir_graficas(x, y, root)
     boton_descargar(root, m, n, R, x_seleccionadas)
 
 def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label):
