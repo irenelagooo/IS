@@ -56,27 +56,29 @@ def calcular_predicciones_click(m,n,valores_x):
     prediccion_label = ttk.Label(root, text=f"Valor: {prediccion}", style="Boton.TLabel")
     prediccion_label.place(x=200, y=875)
 
-def calcular_predicciones_cuadros(root,x_seleccionadas):
+def calcular_predicciones_cuadros(root, x_seleccionadas):
+    # Eliminar el canvas y el scrollbar existentes si los hay
+    borrar_predicciones_canvas(root)
+
     ancho_root = root.winfo_screenwidth()
 
-    cuadros_texto = [] 
+    cuadros_texto = []
 
     canvas_cuadros_texto = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_cuadros_texto.place(x=20, y=925, width=ancho_root-50)
+    canvas_cuadros_texto.place(x=20, y=925, width=ancho_root - 50)
 
     frame_cuadros_texto = tk.Frame(canvas_cuadros_texto)
     canvas_cuadros_texto.create_window((0, 0), window=frame_cuadros_texto, anchor='nw')
-  
+
     scrollbar_horizontal = ttk.Scrollbar(root, orient="horizontal", command=canvas_cuadros_texto.xview)
-    scrollbar_horizontal.pack(side=tk.BOTTOM, fill=tk.X)
+    scrollbar_horizontal.place(x=20, y=950, width=ancho_root - 50)
     canvas_cuadros_texto.configure(xscrollcommand=scrollbar_horizontal.set)
-   
+
     frame_cuadros_texto.bind("<Configure>", lambda e: canvas_cuadros_texto.configure(scrollregion=canvas_cuadros_texto.bbox("all")))
-   
+
     for var in x_seleccionadas:
-        
         frame_variable = tk.Frame(frame_cuadros_texto)
-        frame_variable.pack(side=tk.LEFT, padx=5)  
+        frame_variable.pack(side=tk.LEFT, padx=5)
 
         label_variable = tk.Label(frame_variable, text=f"Variable {var}:")
         label_variable.pack(side=tk.LEFT, padx=5)
@@ -86,10 +88,21 @@ def calcular_predicciones_cuadros(root,x_seleccionadas):
 
         cuadros_texto.append(entry_variable)
 
-    frame_cuadros_texto.update_idletasks()  # Añadir esta línea para actualizar el tamaño del frame
+    frame_cuadros_texto.update_idletasks()
     canvas_cuadros_texto.config(scrollregion=canvas_cuadros_texto.bbox("all"))
 
+    # Guardar el canvas y el scrollbar en el objeto root
+    root.canvas_predicciones = canvas_cuadros_texto
+    root.scrollbar_predicciones = scrollbar_horizontal
+
     return cuadros_texto
+
+def borrar_predicciones_canvas(root):
+    # Verificar si existen elementos de predicciones y destruirlos
+    if hasattr(root, 'canvas_predicciones'):
+        root.canvas_predicciones.destroy()
+        root.scrollbar_predicciones.destroy()
+
 
 def ruta_archivo(root, archivo):
     ruta_label = tk.Label(root, text=f"Ruta: {archivo}")
