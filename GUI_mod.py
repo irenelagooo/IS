@@ -48,7 +48,7 @@ def boton_predicciones(root,x_seleccionadas,m,n):
     valores_x=calcular_predicciones_cuadros(root,x_seleccionadas)
     #x=[i.get() for i in valores_x]
     calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,valores_x))
-    calcular_predicciones_btn.place(x=20, y=875)
+    calcular_predicciones_btn.place(x=20, y=825)
     
 def calcular_predicciones_click(m,n,valores_x):
     x=[int(i.get()) for i in valores_x]
@@ -65,13 +65,13 @@ def calcular_predicciones_cuadros(root, x_seleccionadas):
     cuadros_texto = []
 
     canvas_cuadros_texto = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_cuadros_texto.place(x=20, y=925, width=ancho_root - 50)
+    canvas_cuadros_texto.place(x=20, y=865, width=ancho_root - 50)
 
     frame_cuadros_texto = tk.Frame(canvas_cuadros_texto)
     canvas_cuadros_texto.create_window((0, 0), window=frame_cuadros_texto, anchor='nw')
 
     scrollbar_horizontal = ttk.Scrollbar(root, orient="horizontal", command=canvas_cuadros_texto.xview)
-    scrollbar_horizontal.place(x=20, y=950, width=ancho_root - 50)
+    scrollbar_horizontal.place(x=20, y=888, width=ancho_root - 50)
     canvas_cuadros_texto.configure(xscrollcommand=scrollbar_horizontal.set)
 
     frame_cuadros_texto.bind("<Configure>", lambda e: canvas_cuadros_texto.configure(scrollregion=canvas_cuadros_texto.bbox("all")))
@@ -259,7 +259,7 @@ def imprimir_graficas(x, y, root):
     
     frame_graficas = tk.Frame(root)
     frame_graficas.pack(padx=50, pady=(120, 0)) 
-    canvas_graficas = tk.Canvas(frame_graficas, bg=color_fondo_ventana, width=root.winfo_screenwidth(), height=400)  # Ajuste de altura
+    canvas_graficas = tk.Canvas(frame_graficas, bg=color_fondo_ventana, width=root.winfo_screenwidth(), height=350)  # Ajuste de altura
     canvas_graficas.pack(side='top', fill='both', expand=True)
     canvas_graficas.config(highlightthickness=0)  # Eliminar el borde del canvas
 

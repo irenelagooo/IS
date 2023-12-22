@@ -67,7 +67,7 @@ def hacer_recta(m,n,x):
 
 def imprimir_datos(X, Y):
     n = X.shape[1] 
-    fig, axes = plt.subplots(1, n, figsize=(6 * n, 4))
+    fig, axes = plt.subplots(1, n, figsize=(6 * n, 3.5))
     recta = recta_regresion(X, Y)
     lista=datos_regresion(X,Y)
     n0=lista[-1]
