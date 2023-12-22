@@ -52,11 +52,11 @@ def cargar_modelo_click(root):
     label = ttk.Label(root, text="", style="Boton.TLabel")
     label.place(x=500, y=400)
     resultado_carga = cargar_regresion(label)
-    m, n, x_seleccionadas=resultado_carga.m, resultado_carga.n, resultado_carga.x
-    boton_predicciones(root, x_seleccionadas,m,n)
+    m, n, x_seleccionadas, y_seleccionada = resultado_carga.m, resultado_carga.n, resultado_carga.x, resultado_carga.y
+    boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
 
     
-def boton_predicciones(root,x_seleccionadas,m,n):
+def boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n):
     '''
     Crea el botón para calcular las predicciones
  
@@ -73,10 +73,10 @@ def boton_predicciones(root,x_seleccionadas,m,n):
 
     valores_x=calcular_predicciones_cuadros(root,x_seleccionadas)
     #x=[i.get() for i in valores_x]
-    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,valores_x))
+    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,valores_x,y_seleccionada))
     calcular_predicciones_btn.place(x=20, y=875)
     
-def calcular_predicciones_click(m,n,valores_x):
+def calcular_predicciones_click(m,n,valores_x,y_seleccionada):
     '''
     Crea tantos cuadros de texto como variables x haya para introducir las predicciones
  
@@ -93,7 +93,7 @@ def calcular_predicciones_click(m,n,valores_x):
 
     x=[int(i.get()) for i in valores_x]
     prediccion=predicciones(m,n,x)
-    prediccion_label = ttk.Label(root, text=f"Valor: {prediccion}", style="Boton.TLabel")
+    prediccion_label = ttk.Label(root, text=f"{y_seleccionada}= {prediccion}", style="Boton.TLabel")
     prediccion_label.place(x=200, y=875)
 
 def calcular_predicciones_cuadros(root,x_seleccionadas):
@@ -336,7 +336,7 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
     x, y, m, n, R = regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label)
     x_seleccionadas = x.columns.tolist()
     y_seleccionada = y.name
-    boton_predicciones(root, x_seleccionadas,m,n)
+    boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
     root.update()
     
     imprimir_graficas(x, y)
@@ -385,7 +385,7 @@ def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resulta
     y = mis_datos[y_seleccionada]
     m, n = datos_regresion(x, y)
     R = bondad_ajuste(x, y)
-    r = formula_recta(m, n)
+    r = formula_recta(m, n,x_seleccionadas,y_seleccionada)
     resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
     resultado_label.lift()
     return x, y, m, n, R

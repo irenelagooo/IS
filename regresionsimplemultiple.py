@@ -55,7 +55,7 @@ def valor_regresion(X,m,n):
         y+=X.iloc[:,i]*m[i]
     return y
 
-def formula_recta(m,n):
+def formula_recta(m,n,x,y):
     '''
     Devuelve un string con la fórmula de la recta
  
@@ -73,13 +73,13 @@ def formula_recta(m,n):
    
     '''
 
-    x=0
+    ctn=0
     r=f'{n:.3f}'
     for i in m:
         s='+' if i>=0 else ''
-        x+=1
-        r+=f'{s}{i:.3f}x{x}'
-    return f"y={r}"
+        r+=f'{s}{i:.3f}x{x[ctn]}'
+        ctn+=1
+    return f"{y}={r}"
 
 def predicciones(m, n, x):
     resultado=n #ordenada en el origen
