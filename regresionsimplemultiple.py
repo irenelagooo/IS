@@ -126,7 +126,7 @@ def imprimir_datos(X, Y):
     '''
     
     n = X.shape[1] 
-    fig, axes = plt.subplots(1, n, figsize=(8 * n, 6))
+    fig, axes = plt.subplots(1, n, figsize=(5 * n, 2))
     recta = recta_regresion(X, Y)
     b, b0=datos_regresion(X,Y)
     
