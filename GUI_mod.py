@@ -54,7 +54,7 @@ def calcular_predicciones_click(m,n,valores_x):
     x=[int(i.get()) for i in valores_x]
     prediccion=predicciones(m,n,x)
     prediccion_label = ttk.Label(root, text=f"Valor: {prediccion}", style="Boton.TLabel")
-    prediccion_label.place(x=200, y=875)
+    prediccion_label.place(x=200, y=675)
 
 def calcular_predicciones_cuadros(root, x_seleccionadas):
     # Eliminar el canvas y el scrollbar existentes si los hay
