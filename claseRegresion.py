@@ -31,6 +31,7 @@ class Regresion:
     texto:str
     bondad_del_ajuste:float
     x:list
+    y:str
 
     def __repr__(self) -> str:
         '''

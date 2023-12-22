@@ -335,12 +335,13 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
 
     x, y, m, n, R = regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label)
     x_seleccionadas = x.columns.tolist()
+    y_seleccionada = y.name
     boton_predicciones(root, x_seleccionadas,m,n)
     root.update()
     
     imprimir_graficas(x, y)
 
-    boton_descargar(root, m, n, R, x_seleccionadas)
+    boton_descargar(root, m, n, R, x_seleccionadas, y_seleccionada)
 
 def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label):
     '''
@@ -428,7 +429,7 @@ def imprimir_graficas(x,y):
 
 
 
-def boton_descargar(root,m,n,R,x_seleccionadas):
+def boton_descargar(root, m, n, R, x_seleccionadas, y_seleccionada):
     '''
     Crea un botón que, al pulsarlo, guardará el modelo en un archivo
  
@@ -442,13 +443,17 @@ def boton_descargar(root,m,n,R,x_seleccionadas):
         ordenada en el origen
     R: float
         bondad del ajuste
+    x_seleccionadas: list
+        lista con los nombres de las variables independientes
+    y_seleccionada: str
+        nombre de la variable dependiente
  
     Returns
     -------
     None
     '''
 
-    descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R,x_seleccionadas))
+    descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m, n, R, x_seleccionadas, y_seleccionada))
     descargar_modelo_button.place(x=300,y=395)
 
 
