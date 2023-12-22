@@ -96,7 +96,7 @@ def calcular_predicciones_click(m,n,valores_x):
     x=[int(i.get()) for i in valores_x]
     prediccion=predicciones(m,n,x)
     prediccion_label = ttk.Label(root, text=f"Valor: {prediccion}", style="Boton.TLabel")
-    prediccion_label.place(x=200, y=875)
+    prediccion_label.place(x=200, y=675)
 
 def calcular_predicciones_cuadros(root, x_seleccionadas):
     # Eliminar el canvas y el scrollbar existentes si los hay
@@ -409,7 +409,8 @@ def borrar_canvas_grafica(root):
         root.canvas_fig.get_tk_widget().destroy()
         root.frame_graficas.destroy()
 
-def imprimir_graficas(x,y):
+
+def imprimir_graficas(x, y, root):
     '''
     Imprime la regresión y crea un marco para mostrar las gráfica
  
@@ -424,8 +425,13 @@ def imprimir_graficas(x,y):
     -------
     None
     '''
+    # Obtener el color de fondo de la ventana
+    color_fondo_ventana = root.cget('bg')
 
-    fig=imprimir_datos(x, y)
+    borrar_canvas_grafica(root)
+
+    fig = imprimir_datos(x, y)
+    
     frame_graficas = tk.Frame(root)
     frame_graficas.pack(padx=50, pady=(120, 0)) 
     canvas_graficas = tk.Canvas(frame_graficas, bg=color_fondo_ventana, width=root.winfo_screenwidth(), height=200)  # Ajuste de altura
