@@ -49,6 +49,19 @@ def crear_interfaz(root):
     cargar_modelo_btn.pack(side=tk.LEFT, padx=10)
     
 def cargar_modelo_click(root):
+    '''
+    Carga un modelo de regresión almacenado desde un archivo, lo muestra y agrega
+    un botón en la interfazpara realizar predicciones utilizando el modelo cargado
+
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+
+    Returns
+    -------
+    None
+    '''
     limpiar_interfaz()
     crear_interfaz(root)
     label = ttk.Label(root, text="", style="Boton.TLabel")
@@ -99,7 +112,22 @@ def calcular_predicciones_click(m,n,valores_x):
     prediccion_label.place(x=200, y=675)
 
 def calcular_predicciones_cuadros(root, x_seleccionadas):
-    # Eliminar el canvas y el scrollbar existentes si los hay
+    '''
+    Crea y muestra cuadros de texto para ingresar valores de variables independientes en la interfaz
+
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica.
+    x_seleccionadas: list
+        lista de nombres de variables independientes seleccionadas
+
+    Returns
+    -------
+    cuadros_texto: list
+        lista de cuadros de texto creados para ingresar valores
+    '''
+
     borrar_predicciones_canvas(root)
 
     ancho_root = root.winfo_screenwidth()
@@ -133,13 +161,24 @@ def calcular_predicciones_cuadros(root, x_seleccionadas):
     frame_cuadros_texto.update_idletasks()
     canvas_cuadros_texto.config(scrollregion=canvas_cuadros_texto.bbox("all"))
 
-    # Guardar el canvas y el scrollbar en el objeto root
     root.canvas_predicciones = canvas_cuadros_texto
     root.scrollbar_predicciones = scrollbar_horizontal
 
     return cuadros_texto
 
 def borrar_predicciones_canvas(root):
+    '''
+    Elimina los elementos gráficos relacionados con la entrada de valores para predicciones
+
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    
+    Returns
+    -------
+    None
+    '''
     # Verificar si existen elementos de predicciones y destruirlos
     if hasattr(root, 'canvas_predicciones'):
         root.canvas_predicciones.destroy()
@@ -407,7 +446,19 @@ def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resulta
     return x, y, m, n, R
 
 def borrar_canvas_grafica(root):
-    # Verificar si existen elementos gráficos y destruirlos
+    '''
+    Borra los elementos gráficos asociados a la visualización de gráficas en la interfaz
+
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica.
+
+    Returns
+    -------
+    None
+    '''
+
     if hasattr(root, 'canvas_fig'):
         root.canvas_fig.get_tk_widget().destroy()
         root.frame_graficas.destroy()
