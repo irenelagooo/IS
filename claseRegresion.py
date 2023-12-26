@@ -31,6 +31,7 @@ class Regresion:
     texto:str
     bondad_del_ajuste:float
     x:list
+    y:str
 
     def __repr__(self) -> str:
         '''
@@ -40,7 +41,7 @@ class Regresion:
         -------
         str: cadena que representa el objeto Regresion
         '''
-        return f"\nrecta: {formula_recta(self.m,self.n)}, bondad_del_ajuste: {self.bondad_del_ajuste}, Descripción: {self.texto}"
+        return f"\nrecta: {formula_recta(self.m,self.n,self.x,self.y)}\nbondad_del_ajuste: {self.bondad_del_ajuste}\nDescripción: {self.texto}"
         
 
 if __name__=='__main__':
