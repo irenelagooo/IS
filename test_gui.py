@@ -6,12 +6,12 @@ from carga_guardado import leer_archivos
 from GUI_mod import regresion_gui
 from regresionsimplemultiple import predicciones
 
-@pytest.mark.parametrize("archivo",[("C:\Users\Raúl\Desktop\IA\3 cuatri\Enx Software\P1\housing.csv"),
+@pytest.mark.parametrize("archivo",[(""),("C:\Users\Raúl\Desktop\IA\3 cuatri\Enx Software\P1\housing.csv"),
                                         ("C:\Users\irene\Desktop\IA\ES\IS\housing.db"),
-                                        ('C:/Users/alexe/OneDrive/Escritorio/IS/housing.xlsx')])
+                                        ('C:\Users\alexe\OneDrive\Escritorio\IS\housing.xlsx')])
 
 def test_leer_archivos(archivo):
-   
+    assert len(archivo)>0
     datos = leer_archivos(archivo)
     
     assert datos is not None
