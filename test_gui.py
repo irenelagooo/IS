@@ -4,7 +4,7 @@ from GUI_mod import crear_ventana
 import pandas as pd
 from carga_guardado import leer_archivos 
 from GUI_mod import regresion_gui
-from regresionsimplemultiple import predicciones
+from regresionsimplemultiple import predicciones, datos_regresion
 
 @pytest.mark.parametrize("archivo", [(""),
     (r"C:\Users\Raúl\Desktop\IA\3 cuatri\Enx Software\P1\housing.csv"),
@@ -46,3 +46,10 @@ def test_predicciones(m, n, x):
         assert isinstance(i, float)
     assert isinstance(resultado, float)
 
+@pytest.mark.parametrize("X, Y", [
+    (pd.DataFrame({'X1': [1, 2, 3], 'X2': [4, 5, 6]}), pd.Series([7, 8, 9])),
+])
+def test_datos_regresion(X, Y):
+    result = datos_regresion(X, Y)
+
+    assert len(result[0]) == X.shape[1], f"La longitud de la lista de pendientes no es igual al número de variables independientes para el conjunto de datos {X}, {Y}"
