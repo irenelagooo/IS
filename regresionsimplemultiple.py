@@ -34,14 +34,6 @@ def datos_regresion(X, Y):
     
     return b, b0
 
-    
-def recta_regresion(X,Y):
-    m,resultado=datos_regresion(X,Y)
-    n=X.shape[1]
-    for i in range(n):
-        resultado+=m[i]*X.iloc[:,i] 
-    return resultado
-
 def bondad_ajuste(X, Y):
     '''
     Calcula la bondad del ajuste de la regresión
@@ -159,8 +151,8 @@ def imprimir_datos(X, Y):
     
     n = X.shape[1] 
     fig, axes = plt.subplots(1, n, figsize=(5 * n, 2))
-    recta = recta_regresion(X, Y)
     b, b0=datos_regresion(X,Y)
+    recta=valor_regresion(X,b,b0)
     
 
     if n == 1: axes = [axes] 
@@ -182,7 +174,6 @@ if __name__ == '__main__':
     datos_y = pd.DataFrame({'Y': [2, 4, 5, 4, 5]})
     Y = datos_y['Y']
     x_nuevo =[2,3,4]
-    print('predicciones',recta_regresion(X,Y))
     imprimir_datos(X, Y)
     m,n=datos_regresion(X,Y)
     print(m,n)
