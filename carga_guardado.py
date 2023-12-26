@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from regresionsimplemultiple import *
 import sqlite3
 from claseRegresion import Regresion

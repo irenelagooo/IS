@@ -66,6 +66,13 @@ def boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n):
         ventana principal de la interfaz gráfica
     x_seleccionadas: list
         lista con los nombres de las variables independientes
+    y_seleccionada: str
+        nombre de la variable dependiente
+    m: list
+        lista con las pendientes de la regresión
+    n: float
+        ordenada en el origen
+
     Returns
     -------
     None
@@ -97,6 +104,21 @@ def calcular_predicciones_click(m,n,valores_x,y_seleccionada):
     prediccion_label.place(x=200, y=875)
 
 def calcular_predicciones_cuadros(root,x_seleccionadas):
+    '''
+    Crea tantos cuadros de texto como variables x haya para introducir las predicciones
+ 
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    x_seleccionadas: list
+        lista con los nombres de las variables independientes
+    
+    Returns
+    -------
+    None
+    '''
+
     ancho_root = root.winfo_screenwidth()
 
     cuadros_texto = [] 
