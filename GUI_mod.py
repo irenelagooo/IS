@@ -189,13 +189,16 @@ def crear_tabla(root,mis_datos):
     treeview["columns"] = tuple(mis_datos.columns)
 
     for column in mis_datos.columns:
-        treeview.heading(column, text=column )
+        treeview.heading(column, text=column)
 
     for i, row in mis_datos.iterrows():
         treeview.insert("", i, values=tuple(row))
     for col in mis_datos.columns:
         treeview.heading(col, text=col, anchor='center')  
-        treeview.column(col, anchor='center', width= 200)
+        treeview.column(col, anchor='center', width=150)
+    
+    treeview.heading('#0', text='', anchor='center') 
+    treeview.column('#0', width=0, anchor='center')  
 
     yscroll = ttk.Scrollbar(frame_tabla, orient="vertical", command=treeview.yview)
     yscroll.pack(side="right", fill="y")
@@ -205,7 +208,7 @@ def crear_tabla(root,mis_datos):
     xscroll.pack(side="bottom", fill="x")
     treeview.configure(xscrollcommand=xscroll.set)
 
-    treeview.pack(fill='both', expand=True)
+    treeview.pack()
     
 def seleccionar_x(root,columnas_numericas):
     '''
