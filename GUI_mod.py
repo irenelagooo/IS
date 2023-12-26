@@ -97,10 +97,12 @@ def calcular_predicciones_click(m,n,valores_x):
  
     Parameters
     ----------
-    root: tk.Tk
-        ventana principal de la interfaz gráfica
-    x_seleccionadas: list
-        lista con los nombres de las variables independientes
+    m: list
+        lista con las pendientes de la regresión
+    n: float
+        ordenada en el origen
+    valores_x: list
+        lista de cuadros de texto creados para ingresar valores
     Returns
     -------
     None
