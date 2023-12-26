@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def datos_regresion(X, Y):
-
     '''
     Calcula la(s) pendiente(s) y ordenada en el origen de la regresión
  
@@ -16,7 +15,9 @@ def datos_regresion(X, Y):
     Returns
     -------
     b: list
-        lista con la(s) pendiente(s) y la ordenada en el origen de la regresión
+        lista con la(s) pendiente(s)
+    b0: float
+        ordenada en el origen de la regresión
     '''
 
     n = X.shape[1]
@@ -42,6 +43,21 @@ def recta_regresion(X,Y):
     return resultado
 
 def bondad_ajuste(X, Y):
+    '''
+    Calcula la bondad del ajuste de la regresión
+ 
+    Parameters
+    ----------
+    x: pd.DataFrame
+        DataFrame con las variables X
+    y: pd.series
+        columna de un DataFrame con la variable Y
+ 
+    Returns
+    -------
+    R_cuadrado: float
+        lbondad del ajuste de la regresión
+    '''
     m,n=datos_regresion(X,Y)
     pred=valor_regresion(X,m,n)
     num = ((Y - pred)**2).sum()
@@ -82,6 +98,22 @@ def formula_recta(m,n):
     return f"y={r}"
 
 def predicciones(m, n, x):
+    '''
+    Devuelve el valor de las predicciones
+ 
+    Parameters
+    ----------
+    m: float
+        pendiente
+    n: float
+        ordenada en el origen
+    x: list
+        lista con el valor de cada variable x
+    Returns
+    -------
+    y: float
+        valor de la predicción
+    '''
     resultado=n #ordenada en el origen
     l=len(x)
     for i in range(l):
