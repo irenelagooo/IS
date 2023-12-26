@@ -40,15 +40,15 @@ def bondad_ajuste(X, Y):
  
     Parameters
     ----------
-    x: pd.DataFrame
+    X: pd.DataFrame
         DataFrame con las variables X
-    y: pd.series
+    Y: pd.series
         columna de un DataFrame con la variable Y
  
     Returns
     -------
     R_cuadrado: float
-        lbondad del ajuste de la regresión
+        bondad del ajuste de la regresión
     '''
     m,n=datos_regresion(X,Y)
     pred=valor_regresion(X,m,n)
@@ -58,6 +58,24 @@ def bondad_ajuste(X, Y):
     return R_cuadrado
  
 def valor_regresion(X,m,n):
+    '''
+    Devuelve los valores de la regresión
+ 
+    Parameters
+    ----------
+    X: pd.DataFrame
+        DataFrame con las variables X
+    m: float
+        pendiente
+    n: float
+        ordenada en el origen
+ 
+    Returns
+    -------
+    y: pd.series
+        panda series con los valores de la regresión
+   
+    '''
     y=n
     for i in range(X.shape[1]):
         y+=X.iloc[:,i]*m[i]
@@ -176,5 +194,6 @@ if __name__ == '__main__':
     x_nuevo =[2,3,4]
     imprimir_datos(X, Y)
     m,n=datos_regresion(X,Y)
+    print(type(valor_regresion(X,m,n)))
     print(m,n)
     print(predicciones(m,n,x_nuevo))
