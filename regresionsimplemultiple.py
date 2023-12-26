@@ -155,3 +155,4 @@ if __name__ == '__main__':
     m,n=datos_regresion(X,Y)
     print(m,n)
     print(predicciones(m,n,x_nuevo))
+    print(valor_regresion(X,m,n))
