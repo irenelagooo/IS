@@ -596,14 +596,6 @@ def borrar_grafica():
     if hasattr(root, 'frame_graficas'):
         root.frame_graficas.destroy()
 
-def mostrar_modelo(regresion):
-    frame_modelo = tk.Frame(root, bg='light grey', padx=20, pady=20)
-    frame_modelo.place(relx=0.5, rely=0.5, anchor='center')
-    
-    # Mostrar el modelo dentro del Frame
-    label_modelo = tk.Label(frame_modelo, text=str(regresion), font=("Arial", 12))
-    label_modelo.pack(padx=10, pady=10)
-
 def crear_ventana():
     '''
     Crea la ventana de la interfaz gráfica
