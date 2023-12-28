@@ -15,6 +15,20 @@ import os
 ])
 
 def test_leer_archivos(archivo):
+    '''
+    Prueba la función leer_archivos para asegurar que la ruta del archivo o el
+    archivo existan o no estén vacíos
+    
+    Parameters
+    ----------
+    archivo: str
+        ruta del archivo a leer
+
+    Returns
+    -------
+    None
+    '''
+
     assert len(archivo)>0, 'Ruta del archivo vacía'
     assert os.path.exists(archivo), f'La ruta del archivo no existe: {archivo}'
     datos = leer_archivos(archivo)
@@ -28,6 +42,23 @@ def test_leer_archivos(archivo):
                            (tk.Tk(), {'longitud':tk.BooleanVar(value=True), 'latitud': tk.BooleanVar(value=False), 'habitantes': tk.BooleanVar(value=False)}, tk.StringVar())])
 
 def test_regresion_gui(root,variables_x, y_seleccionada):
+    """
+    Prueba la función regresion_gui para asegurar que seleccionas al menos una Y y una X
+
+    Parameters
+    ----------
+    root : tk.Tk
+        ventana principal de la interfaz gráfica
+    variables_x: dict
+        diccionario con tk.BooleanVar que indican si se seleccionó o no cada variable X
+    y_seleccionada: tk.StringVar
+        variable Y seleccionada
+
+    Returns
+    -------
+    None
+    """
+
     mis_datos = pd.DataFrame({'longitud': [1, 2, 223, 4616, 5],'latitud':[3,4,5,6,1],'habitantes':[100,30,40,1,0]})
     resultado_label=tk.Label(root)
     assert y_seleccionada.get() != '', 'Selecciona al menos una variable Y'
@@ -41,7 +72,24 @@ def test_regresion_gui(root,variables_x, y_seleccionada):
     ([1.2, 2.3], 6.1, [3.0,'*'])])
 
 def test_predicciones(m, n, x):
+    '''
+    Prueba la función predicciones para asegurar que los valores sean
+    valores númericos o el resultado sea numérico
+
+    Parameters
+    ----------
+    m: float
+        pendiente
+    n: float
+        ordenada en el origen
+    x: pd.series
+        columna de un DataFrame con la variable X
     
+    Returns
+    -------
+    None
+    '''
+
     for i in x:
         assert isinstance(i, float), 'Las predicciones deben ser valores numéricos'
     resultado = predicciones(m, n, x)
@@ -51,7 +99,25 @@ def test_predicciones(m, n, x):
                                   (pd.DataFrame({'X1': [4, 5, 6]}), pd.Series([10, 11, 12])),
                                   (pd.DataFrame({'X1': [1, 2], 'X2': [4, 6], 'X3': [7, 9]}), pd.Series([10, 12]))])
 def test_datos_regresion(X, Y):
+    '''
+    Prueba la función datos_regresion para asegurar que el número de pendientes y 
+    el números de variables X sea el mismo, y que la ordenada en el origen es un valor numérico
+    
+    Parameters
+    ----------
+    X: pd.DataFrame
+        DataFrame con las variables X
+    Y: pd.series
+        columna de un DataFrame con la variable Y
+
+    Returns
+    -------
+    None
+    '''
+    
     m, n = datos_regresion(X, Y)
 
     assert len(m) == X.shape[1], 'Número de pendientes diferente al número de variables X'
-    assert isinstance(n,float), 'Ordenada en el origen debe ser un valor numérico'
+    for i in m:
+        assert isinstance(i, float), 'Cada pendiente debe ser un valor numérico'
+    assert isinstance(n, float), 'Ordenada en el origen debe ser un valor numérico'
