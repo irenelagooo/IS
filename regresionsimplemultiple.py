@@ -197,3 +197,4 @@ if __name__ == '__main__':
     print(type(valor_regresion(X,m,n)))
     print(m,n)
     print(predicciones(m,n,x_nuevo))
+    print(valor_regresion(X,m,n))
