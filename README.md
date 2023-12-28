@@ -1,5 +1,6 @@
 # Manual de usuario
-Esta aplicación crea modelos de regresión lineal simple y múltiple a partir de datos almacenados en archivos csv, excel o bases de datos. Permite visualizar la regresión y hacer predicciones. Además, se podrán guardar modelos para no volverlos a calcular y luego cargarlos en la aplicación.
+Esta aplicación crea modelos de regresión lineal simple y múltiple a partir de datos almacenados en archivos csv, excel o bases de datos. Permite visualizar la regresión, tras seleccionar las variables independientes y la variable dependiente, y hacer predicciones del modelo. Además, se podrán guardar modelos para no volverlos a calcular y luego cargarlos en la aplicación para hacer predicciones sobre ellos. La aplicación tiene una interfaz gráfica que permite hacer todas las acciones anteriores.
+
 Para utilizar esta aplicación, abra el símbolo de sistema e instale las siguientes librerías, poniendo pip install seguido del nombre de la librería que quiera instalar:
 - pandas
 - tkinter
