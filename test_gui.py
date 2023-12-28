@@ -16,7 +16,8 @@ import os
 
 def test_leer_archivos(archivo):
     '''
-    Prueba la función leer_archivos para asegurar que la ruta del archivo o el archivo existan o no estén vacíos
+    Prueba la función leer_archivos para asegurar que la ruta del archivo o el
+    archivo existan o no estén vacíos
     
     Parameters
     ----------
@@ -72,7 +73,8 @@ def test_regresion_gui(root,variables_x, y_seleccionada):
 
 def test_predicciones(m, n, x):
     '''
-    Prueba la función predicciones para asegurar que los valores sean valores númericos o el resultado sea numérico
+    Prueba la función predicciones para asegurar que los valores sean
+    valores númericos o el resultado sea numérico
 
     Parameters
     ----------
@@ -98,7 +100,8 @@ def test_predicciones(m, n, x):
                                   (pd.DataFrame({'X1': [1, 2], 'X2': [4, 6], 'X3': [7, 9]}), pd.Series([10, 12]))])
 def test_datos_regresion(X, Y):
     '''
-    Prueba la función datos_regresion para asegurar que el número de pendientes y el números de variables X sea el mismo, y que la ordenada en el origen es un valor numérico
+    Prueba la función datos_regresion para asegurar que el número de pendientes y 
+    el números de variables X sea el mismo, y que la ordenada en el origen es un valor numérico
     
     Parameters
     ----------
@@ -115,4 +118,6 @@ def test_datos_regresion(X, Y):
     m, n = datos_regresion(X, Y)
 
     assert len(m) == X.shape[1], 'Número de pendientes diferente al número de variables X'
-    assert isinstance(n,float), 'Ordenada en el origen debe ser un valor numérico'
+    for i in m:
+        assert isinstance(i, float), 'Cada pendiente debe ser un valor numérico'
+    assert isinstance(n, float), 'Ordenada en el origen debe ser un valor numérico'
