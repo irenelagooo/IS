@@ -67,11 +67,11 @@ def cargar_modelo_click(root):
     label = ttk.Label(root, text="", style="Boton.TLabel")
     label.place(x=500, y=400)
     resultado_carga = cargar_regresion(label)
-    m, n, x_seleccionadas=resultado_carga.m, resultado_carga.n, resultado_carga.x
-    boton_predicciones(root, x_seleccionadas,m,n)
+    m, n, x_seleccionadas, y_seleccionada = resultado_carga.m, resultado_carga.n, resultado_carga.x, resultado_carga.y
+    boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
 
     
-def boton_predicciones(root,x_seleccionadas,m,n):
+def boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n):
     '''
     Crea el botón para calcular las predicciones
  
@@ -81,6 +81,13 @@ def boton_predicciones(root,x_seleccionadas,m,n):
         ventana principal de la interfaz gráfica
     x_seleccionadas: list
         lista con los nombres de las variables independientes
+    y_seleccionada: str
+        nombre de la variable dependiente
+    m: list
+        lista con las pendientes de la regresión
+    n: float
+        ordenada en el origen
+
     Returns
     -------
     None
@@ -88,12 +95,13 @@ def boton_predicciones(root,x_seleccionadas,m,n):
 
     valores_x=calcular_predicciones_cuadros(root,x_seleccionadas)
     #x=[i.get() for i in valores_x]
-    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,valores_x))
+    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,valores_x,y_seleccionada))
     calcular_predicciones_btn.place(x=20, y=675)
+
     
-def calcular_predicciones_click(m,n,valores_x):
+def calcular_predicciones_click(m,n,valores_x,y_seleccionada):
     '''
-    Crea tantos cuadros de texto como variables x haya para introducir las predicciones
+    Calcula la predicción e imprime los resultados
  
     Parameters
     ----------
@@ -102,7 +110,10 @@ def calcular_predicciones_click(m,n,valores_x):
     n: float
         ordenada en el origen
     valores_x: list
-        lista de cuadros de texto creados para ingresar valores
+        lista con los nombres de las variables independientes
+    y_seleccionada: str
+        nombre de la variable dependiente
+
     Returns
     -------
     None
@@ -110,10 +121,11 @@ def calcular_predicciones_click(m,n,valores_x):
 
     x=[int(i.get()) for i in valores_x]
     prediccion=predicciones(m,n,x)
-    prediccion_label = ttk.Label(root, text=f"Valor: {prediccion}", style="Boton.TLabel")
+ 
+    prediccion_label = ttk.Label(root, text=f"{y_seleccionada}= {prediccion}", style="Boton.TLabel")
     prediccion_label.place(x=200, y=675)
 
-def calcular_predicciones_cuadros(root, x_seleccionadas):
+def calcular_predicciones_cuadros(root,x_seleccionadas):
     '''
     Crea y muestra cuadros de texto para ingresar valores de variables independientes en la interfaz
 
@@ -129,7 +141,6 @@ def calcular_predicciones_cuadros(root, x_seleccionadas):
     cuadros_texto: list
         lista de cuadros de texto creados para ingresar valores
     '''
-
     borrar_predicciones_canvas(root)
 
     ancho_root = root.winfo_screenwidth()
@@ -390,15 +401,17 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
 
     x, y, m, n, R = regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label)
     x_seleccionadas = x.columns.tolist()
-    boton_predicciones(root, x_seleccionadas, m, n)
-    root.update()
+    y_seleccionada = y.name
+    boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
+    root.update() 
 
     # Actualiza el texto de la etiqueta con el resultado
-    resultado_label.config(text=f"Recta regresión: {formula_recta(m, n)}, Bondad del ajuste: {R:.3f}")
+    resultado_label.config(text=f"Recta regresión: {formula_recta(m, n, x_seleccionadas, y_seleccionada)}, Bondad del ajuste: {R:.3f}")
     resultado_label.lift()
 
-    imprimir_graficas(x, y, root)
-    boton_descargar(root, m, n, R, x_seleccionadas)
+
+    imprimir_graficas(x, y, root) 
+    boton_descargar(root, m, n, R, x_seleccionadas, y_seleccionada)
 
 def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label):
     '''
@@ -442,7 +455,7 @@ def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resulta
     y = mis_datos[y_seleccionada]
     m, n = datos_regresion(x, y)
     R = bondad_ajuste(x, y)
-    r = formula_recta(m, n)
+    r = formula_recta(m, n,x_seleccionadas,y_seleccionada)
     resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
     resultado_label.lift()
     return x, y, m, n, R
@@ -513,7 +526,7 @@ def imprimir_graficas(x, y, root):
     root.frame_graficas = frame_graficas
 
 
-def boton_descargar(root,m,n,R,x_seleccionadas):
+def boton_descargar(root, m, n, R, x_seleccionadas, y_seleccionada):
     '''
     Crea un botón que, al pulsarlo, guardará el modelo en un archivo
  
@@ -527,13 +540,17 @@ def boton_descargar(root,m,n,R,x_seleccionadas):
         ordenada en el origen
     R: float
         bondad del ajuste
+    x_seleccionadas: list
+        lista con los nombres de las variables independientes
+    y_seleccionada: str
+        nombre de la variable dependiente
  
     Returns
     -------
     None
     '''
 
-    descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R,x_seleccionadas))
+    descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R,x_seleccionadas,y_seleccionada))
     descargar_modelo_button.place(x=300,y=415)
 
 
@@ -578,14 +595,6 @@ def borrar_grafica():
 
     if hasattr(root, 'frame_graficas'):
         root.frame_graficas.destroy()
-
-def mostrar_modelo(regresion):
-    frame_modelo = tk.Frame(root, bg='light grey', padx=20, pady=20)
-    frame_modelo.place(relx=0.5, rely=0.5, anchor='center')
-    
-    # Mostrar el modelo dentro del Frame
-    label_modelo = tk.Label(frame_modelo, text=str(regresion), font=("Arial", 12))
-    label_modelo.pack(padx=10, pady=10)
 
 def crear_ventana():
     '''

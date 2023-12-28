@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from regresionsimplemultiple import *
 import sqlite3
 from claseRegresion import Regresion
@@ -34,7 +33,7 @@ def leer_archivos(path):
         df = pd.read_sql_query(f"SELECT * FROM {cursor.fetchall()[0][0]}", conn)
     return df
 
-def guardar_regresion(m,n,R,x_seleccionadas):
+def guardar_regresion(m,n,R,x_seleccionadas,y_seleccionada):
     '''
     Guarda los datos de una regresión en un archivo
 
@@ -57,7 +56,7 @@ def guardar_regresion(m,n,R,x_seleccionadas):
     '''
 
     texto = simpledialog.askstring("Descripción", "Ingrese un texto que desee guardar con los datos de la regresión:")
-    regresion=Regresion(m,n,texto,R,x_seleccionadas)
+    regresion=Regresion(m,n,texto,R,x_seleccionadas,y_seleccionada)
     archivo = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
     
     if archivo:
