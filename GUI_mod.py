@@ -403,21 +403,28 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
 
     resultado_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label)), None)
 
-    x, y, m, n, R = regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label)
-    x_seleccionadas = x.columns.tolist()
-    y_seleccionada = y.name
-    boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
-    root.update() 
+    try:
+        x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
 
-    # Actualiza el texto de la etiqueta con el resultado
-    resultado_label.config(text=f"Recta regresión: {formula_recta(m, n, x_seleccionadas, y_seleccionada)}, Bondad del ajuste: {R:.3f}")
-    resultado_label.lift()
+        y_seleccionada = variable_y_seleccionada_radio.get()
+        x, y, m, n, R = regresion_gui(mis_datos, x_seleccionadas, y_seleccionada)
+        imprimir_graficas(x, y, root)
+    except KeyError:
+        resultado_label.config(text = 'Debes seleccionar una variable Y')
+        
+    except ValueError:
+        resultado_label.config(text = 'Debes seleccionar al menos una variable X')
+        
+    else:
+        boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
 
+        resultado_label.config(text=f"Recta regresión: {formula_recta(m, n, x_seleccionadas, y_seleccionada)}, Bondad del ajuste: {R:.3f}")
+        boton_descargar(root, m, n, R, x_seleccionadas, y_seleccionada)
 
-    imprimir_graficas(x, y, root) 
-    boton_descargar(root, m, n, R, x_seleccionadas, y_seleccionada)
+    finally:
+        resultado_label.lift()
 
-def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resultado_label):
+def regresion_gui(mis_datos, x_seleccionadas, y_seleccionada):
     '''
     Obtiene las variables x e y, la(s) pendiente(s), ordenada en el origen y bondad del ajuste
  
@@ -445,23 +452,12 @@ def regresion_gui(mis_datos, variables_x, variable_y_seleccionada_radio, resulta
     R: float
         bondad del ajuste
     '''
-
-    width_of_label = 400
-    x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
-
-    y_seleccionada = variable_y_seleccionada_radio.get()
-
-    if not x_seleccionadas or not y_seleccionada:
-        resultado_label.config(text="Error: Debes seleccionar al menos una variable X e Y")
-        resultado_label.lift()
-
     x = mis_datos[x_seleccionadas]
     y = mis_datos[y_seleccionada]
+
     m, n = datos_regresion(x, y)
     R = bondad_ajuste(x, y)
-    r = formula_recta(m, n,x_seleccionadas,y_seleccionada)
-    resultado_label.config(text=f"Recta regresión: {r}, Bondad del ajuste: {R:.3f}")
-    resultado_label.lift()
+    
     return x, y, m, n, R
 
 def borrar_canvas_grafica(root):
