@@ -432,12 +432,10 @@ def regresion_gui(mis_datos, x_seleccionadas, y_seleccionada):
     ----------
     mis_datos: pd.DataFrame
         dataFrame con la información del archivo
-    variables_x: dict
-        diccionario con tk.BooleanVar que indican si se seleccionó o no cada variable X
-    variable_y_seleccionada_radio: tk.StringVar
-        variable Y seleccionada
-    resultado_label: tk.Label
-        etiqueta para mostrar resultados
+    x_seleccionadas: list
+        lista con los nombres de las variables independientes
+    y_seleccionada: str
+        nombre de la variable dependiente
  
     Returns
     -------
