@@ -51,7 +51,7 @@ def crear_interfaz(root):
 def cargar_modelo_click(root):
     '''
     Carga un modelo de regresión almacenado desde un archivo, lo muestra y agrega
-    un botón en la interfazpara realizar predicciones utilizando el modelo cargado
+    un botón en la interfaz para realizar predicciones utilizando el modelo cargado
 
     Parameters
     ----------
@@ -118,12 +118,16 @@ def calcular_predicciones_click(m,n,valores_x,y_seleccionada):
     -------
     None
     '''
-
-    x=[int(i.get()) for i in valores_x]
-    prediccion=predicciones(m,n,x)
- 
-    prediccion_label = ttk.Label(root, text=f"{y_seleccionada}= {prediccion}", style="Boton.TLabel")
+    prediccion_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label)), None)
     prediccion_label.place(x=200, y=675)
+    try:
+        x=[float(i.get()) for i in valores_x]
+    except ValueError:
+        prediccion_label.config(text = 'Debes introducir un valor númerico en cada celda')
+    else:
+        prediccion=predicciones(m,n,x)
+    
+        prediccion_label.config(text = f"{y_seleccionada}= {prediccion}")
 
 def calcular_predicciones_cuadros(root,x_seleccionadas):
     '''
