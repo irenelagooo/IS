@@ -118,8 +118,11 @@ def calcular_predicciones_click(m,n,valores_x,y_seleccionada):
     -------
     None
     '''
-    prediccion_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label)), None)
-    prediccion_label.place(x=200, y=675)
+    
+    prediccion_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label) and child.winfo_y() == 675), None)
+    if not prediccion_label:
+        prediccion_label = ttk.Label(root, text="", style="Boton.TLabel")
+        prediccion_label.place(x=200, y=675)
     try:
         x=[float(i.get()) for i in valores_x]
     except ValueError:
