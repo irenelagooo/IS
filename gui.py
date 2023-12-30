@@ -455,7 +455,7 @@ def borrar_boton(root,boton):
 
 def borrar_prediccion_label(root):
     '''
-    Elimina el label relacionado con los resultados en la interfaz
+    Elimina la etiqueta que muestra las predicciones en la interfaz
 
     Parameters
     ----------
