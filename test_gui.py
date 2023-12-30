@@ -60,7 +60,6 @@ def test_calcular_regresion_click(root,variables_x, y_seleccionada):
     """
 
     mis_datos = pd.DataFrame({'longitud': [1, 2, 223, 4616, 5],'latitud':[3,4,5,6,1],'habitantes':[100,30,40,1,0]})
-    resultado_label = tk.ttk.Label(root, text="", style="Boton.TLabel")
     assert y_seleccionada.get() != '', 'Selecciona al menos una variable Y'
     assert any(var.get() for var in variables_x.values()), 'Selecciona al menos una variable X'
     calcular_regresion_click(root, mis_datos, variables_x, y_seleccionada)

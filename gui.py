@@ -404,7 +404,9 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
     plt.close('all') 
     borrar_prediccion_label(root)
     resultado_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label) and child.winfo_y() == 415), None)
-
+    if not resultado_label:
+        resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
+    resultado_label.place(x=500, y=415)
     try:
         x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
 
