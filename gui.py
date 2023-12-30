@@ -1,15 +1,9 @@
 import tkinter as tk
 from tkinter import ttk, filedialog
-import pandas as pd
-import tkinter as tk
-from tkinter import ttk, Scrollbar, filedialog, simpledialog, messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-import pandas as pd
-from regresion import *
-from clase_regresion import Regresion
-from carga_guardado import cargar_regresion,guardar_regresion,leer_archivos
-from regresion import imprimir_datos
+from carga_guardado import cargar_regresion, guardar_regresion, leer_archivos
+from regresion import imprimir_datos, predicciones, formula_recta, datos_regresion, bondad_ajuste
 import sys
 
 def crear_interfaz(root):
@@ -19,7 +13,7 @@ def crear_interfaz(root):
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
  
     Returns
     -------
@@ -36,40 +30,40 @@ def crear_interfaz(root):
     
     root.geometry(f"{ancho_root}x{altura_root}+{x_pos}+{y_pos}")
     
-    resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
-    resultado_label.place(x=500, y=415)
+    resultado_label = ttk.Label(root, text="", style = "Boton.TLabel")
+    resultado_label.place(x = 500, y = 415)
 
     frame_botones = tk.Frame(root)
-    frame_botones.pack(pady=10)
+    frame_botones.pack(pady = 10)
 
-    cargar_archivo_btn = tk.Button(frame_botones, text="Cargar Archivo", command=lambda: cargar_archivo(root))
-    cargar_archivo_btn.pack(side=tk.LEFT, padx=10)
+    cargar_archivo_btn = tk.Button(frame_botones, text = "Cargar Archivo", command = lambda: cargar_archivo(root))
+    cargar_archivo_btn.pack(side = tk.LEFT, padx=10)
 
-    cargar_modelo_btn = tk.Button(frame_botones, text="Cargar Modelo", command=lambda: cargar_modelo_click(root))
-    cargar_modelo_btn.pack(side=tk.LEFT, padx=10)
+    cargar_modelo_btn = tk.Button(frame_botones, text = "Cargar Modelo", command = lambda: cargar_modelo_click(root))
+    cargar_modelo_btn.pack(side = tk.LEFT, padx = 10)
     
 def cargar_modelo_click(root):
     '''
-    Carga un modelo de regresión almacenado desde un archivo, lo muestra y agrega
-    un botón en la interfaz para realizar predicciones utilizando el modelo cargado
+    Carga un modelo de regresion almacenado desde un archivo, lo muestra y agrega
+    un boton en la interfaz para realizar predicciones utilizando el modelo cargado
 
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
 
     Returns
     -------
     None
     '''
+
     limpiar_interfaz()
     crear_interfaz(root)
-    label = ttk.Label(root, text="", style="Boton.TLabel")
-    label.place(x=500, y=400)
+    label = ttk.Label(root, text = "", style = "Boton.TLabel")
+    label.place(x = 500, y = 400)
     resultado_carga = cargar_regresion(label)
     m, n, x_seleccionadas, y_seleccionada = resultado_carga.get_m(), resultado_carga.get_n(), resultado_carga.get_x(), resultado_carga.get_y()
     boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
-
     
 def boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n):
     '''
@@ -78,13 +72,13 @@ def boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n):
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
     x_seleccionadas: list
         lista con los nombres de las variables independientes
     y_seleccionada: str
         nombre de la variable dependiente
     m: list
-        lista con las pendientes de la regresión
+        lista con las pendientes de la regresion
     n: float
         ordenada en el origen
 
@@ -93,19 +87,19 @@ def boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n):
     None
     '''
 
-    valores_x=calcular_predicciones_cuadros(root,x_seleccionadas)
-    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicción", command= lambda: calcular_predicciones_click(m,n,valores_x,y_seleccionada))
-    calcular_predicciones_btn.place(x=20, y=675)
+    valores_x = calcular_predicciones_cuadros(root, x_seleccionadas)
+    calcular_predicciones_btn = tk.Button(root, text = "Calcular Predicción", command = lambda: calcular_predicciones_click(m, n, valores_x, y_seleccionada))
+    calcular_predicciones_btn.place(x = 20, y = 675)
 
     
-def calcular_predicciones_click(m,n,valores_x,y_seleccionada):
+def calcular_predicciones_click(m, n, valores_x, y_seleccionada):
     '''
-    Calcula la predicción e imprime los resultados
+    Calcula la prediccion e imprime los resultados
  
     Parameters
     ----------
     m: list
-        lista con las pendientes de la regresión
+        lista con las pendientes de la regresion
     n: float
         ordenada en el origen
     valores_x: list
@@ -119,26 +113,30 @@ def calcular_predicciones_click(m,n,valores_x,y_seleccionada):
     '''
     
     prediccion_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label) and child.winfo_y() == 675), None)
+    
     if not prediccion_label:
-        prediccion_label = ttk.Label(root, text="", style="Boton.TLabel")
-        prediccion_label.place(x=200, y=675)
+        prediccion_label = ttk.Label(root, text = "", style = "Boton.TLabel")
+        prediccion_label.place(x = 200, y = 675)
+    
     try:
         x=[float(i.get()) for i in valores_x]
+    
     except ValueError:
         prediccion_label.config(text = 'Debes introducir un valor númerico en cada celda')
-    else:
-        prediccion=predicciones(m,n,x)
     
-        prediccion_label.config(text = f"{y_seleccionada}= {prediccion}")
+    else:
+        prediccion = predicciones(m, n, x)
+    
+        prediccion_label.config(text = f"{y_seleccionada} = {prediccion}")
 
-def calcular_predicciones_cuadros(root,x_seleccionadas):
+def calcular_predicciones_cuadros(root, x_seleccionadas):
     '''
     Crea y muestra cuadros de texto para ingresar valores de variables independientes en la interfaz
 
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica.
+        ventana principal de la interfaz grafica
     x_seleccionadas: list
         lista de nombres de variables independientes seleccionadas
 
@@ -147,33 +145,32 @@ def calcular_predicciones_cuadros(root,x_seleccionadas):
     cuadros_texto: list
         lista de cuadros de texto creados para ingresar valores
     '''
+
     borrar_predicciones_canvas(root)
 
     ancho_root = root.winfo_screenwidth()
-
     cuadros_texto = []
 
-    canvas_cuadros_texto = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_cuadros_texto.place(x=20, y=715, width=ancho_root - 50)
-
+    canvas_cuadros_texto = tk.Canvas(root, bd = 0, highlightthickness = 0)
+    canvas_cuadros_texto.place(x = 20, y = 715, width = ancho_root - 50)
     frame_cuadros_texto = tk.Frame(canvas_cuadros_texto)
-    canvas_cuadros_texto.create_window((0, 0), window=frame_cuadros_texto, anchor='nw')
+    canvas_cuadros_texto.create_window((0, 0), window=frame_cuadros_texto, anchor = 'nw')
 
-    scrollbar_horizontal = ttk.Scrollbar(root, orient="horizontal", command=canvas_cuadros_texto.xview)
-    scrollbar_horizontal.place(x=20, y=738, width=ancho_root - 50)
-    canvas_cuadros_texto.configure(xscrollcommand=scrollbar_horizontal.set)
+    scrollbar_horizontal = ttk.Scrollbar(root, orient = "horizontal", command = canvas_cuadros_texto.xview)
+    scrollbar_horizontal.place(x = 20, y = 738, width = ancho_root - 50)
 
-    frame_cuadros_texto.bind("<Configure>", lambda e: canvas_cuadros_texto.configure(scrollregion=canvas_cuadros_texto.bbox("all")))
+    canvas_cuadros_texto.configure(xscrollcommand = scrollbar_horizontal.set)
+    frame_cuadros_texto.bind("<Configure>", lambda e: canvas_cuadros_texto.configure(scrollregion = canvas_cuadros_texto.bbox("all")))
 
     for var in x_seleccionadas:
         frame_variable = tk.Frame(frame_cuadros_texto)
-        frame_variable.pack(side=tk.LEFT, padx=5)
+        frame_variable.pack(side = tk.LEFT, padx = 5)
 
-        label_variable = tk.Label(frame_variable, text=f"Variable {var}:")
-        label_variable.pack(side=tk.LEFT, padx=5)
+        label_variable = tk.Label(frame_variable, text = f"Variable {var}:")
+        label_variable.pack(side = tk.LEFT, padx = 5)
 
         entry_variable = tk.Entry(frame_variable)
-        entry_variable.pack(side=tk.LEFT, padx=5)
+        entry_variable.pack(side = tk.LEFT, padx = 5)
 
         cuadros_texto.append(entry_variable)
 
@@ -187,30 +184,30 @@ def calcular_predicciones_cuadros(root,x_seleccionadas):
 
 def borrar_predicciones_canvas(root):
     '''
-    Elimina los elementos gráficos relacionados con la entrada de valores para predicciones
+    Elimina los elementos graficos relacionados con la entrada de valores para predicciones
 
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
     
     Returns
     -------
     None
     '''
-    # Verificar si existen elementos de predicciones y destruirlos
+
     if hasattr(root, 'canvas_predicciones'):
         root.canvas_predicciones.destroy()
         root.scrollbar_predicciones.destroy()
 
-
 def ruta_archivo(root, archivo):
     '''
     Crea una etiqueta que muestra la ruta del archivo
+
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
     archivo: str
         ruta del archivo seleccionado
        
@@ -220,20 +217,21 @@ def ruta_archivo(root, archivo):
         etiqueta con la ruta del archivo
     '''
 
-    ruta_label = tk.Label(root, text=f"Ruta: {archivo}")
-    ruta_label.pack(anchor='nw', padx=10, pady=0)  # Ajuste en el anclaje y los márgenes
+    ruta_label = tk.Label(root, text = f"Ruta: {archivo}")
+    ruta_label.pack(anchor = 'nw', padx = 10, pady = 0)
     return ruta_label
 
 
-def crear_tabla(root,mis_datos):
+def crear_tabla(root, mis_datos):
     '''
     Crea un marco y configura encabezados para mostrar los datos en una tabla
+
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
-    mis_datos: DataFrame
-        dataframe con la información del archivo
+        ventana principal de la interfaz grafica
+    mis_datos: pd.DataFrame
+        DataFrame con la informacion del archivo
        
     Returns
     -------
@@ -241,85 +239,86 @@ def crear_tabla(root,mis_datos):
     '''
 
     frame_tabla = tk.Frame(root)
-    frame_tabla.pack(pady=10, padx=20)
+    frame_tabla.pack(pady = 10, padx = 20)
 
     treeview = ttk.Treeview(frame_tabla)
     treeview["columns"] = tuple(mis_datos.columns)
 
     for column in mis_datos.columns:
-        treeview.heading(column, text=column)
+        treeview.heading(column, text = column)
 
     for i, row in mis_datos.iterrows():
-        treeview.insert("", i, values=tuple(row))
+        treeview.insert("", i, values = tuple(row))
     for col in mis_datos.columns:
-        treeview.heading(col, text=col, anchor='center')  
-        treeview.column(col, anchor='center', width=150)
+        treeview.heading(col, text = col, anchor = 'center')  
+        treeview.column(col, anchor = 'center', width = 150)
     
-    treeview.heading('#0', text='', anchor='center') 
-    treeview.column('#0', width=0, anchor='center')  
+    treeview.heading('#0', text = '', anchor = 'center') 
+    treeview.column('#0', width = 0, anchor = 'center')  
 
-    yscroll = ttk.Scrollbar(frame_tabla, orient="vertical", command=treeview.yview)
-    yscroll.pack(side="right", fill="y")
-    treeview.configure(yscrollcommand=yscroll.set)
+    yscroll = ttk.Scrollbar(frame_tabla, orient = "vertical", command = treeview.yview)
+    yscroll.pack(side = "right", fill = "y")
+    treeview.configure(yscrollcommand = yscroll.set)
 
-    xscroll = ttk.Scrollbar(frame_tabla, orient="horizontal", command=treeview.xview)
-    xscroll.pack(side="bottom", fill="x")
-    treeview.configure(xscrollcommand=xscroll.set)
+    xscroll = ttk.Scrollbar(frame_tabla, orient = "horizontal", command = treeview.xview)
+    xscroll.pack(side = "bottom", fill = "x")
+    treeview.configure(xscrollcommand = xscroll.set)
 
     treeview.pack()
     
-def seleccionar_x(root,columnas_numericas):
+def seleccionar_x(root, columnas_numericas):
     '''
     Muestra las variables X y crea checkbuttons para poder seleccionarlas
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
-    columnas_numericas: DataFrame
-        dataframe donde todas las columnas son numericas
+        ventana principal de la interfaz grafica
+    columnas_numericas: list
+        lista con el nombre de las columnas numericas
        
     Returns
     -------
-    variables_x: DataFrame
-        dataframe con booleanos que indican si se seleccionó o no cada variable
+    variables_x: pd.DataFrame
+        dataframe con tk.BooleanVar que indican si se selecciono o no cada variable
  
     '''
 
     ancho_root = root.winfo_screenwidth()
 
-    seleccionar_var_x_label = tk.Label(root, text="Selecciona variable(s) X:")
-    seleccionar_var_x_label.place(x=10, y=330)
+    seleccionar_var_x_label = tk.Label(root, text = "Selecciona variable(s) X:")
+    seleccionar_var_x_label.place(x = 10, y = 330)
 
-    canvas_x = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_x.place(x=seleccionar_var_x_label.winfo_reqwidth() + 10, y=330, width=ancho_root-310)
+    canvas_x = tk.Canvas(root, bd = 0, highlightthickness=0)
+    canvas_x.place(x = seleccionar_var_x_label.winfo_reqwidth() + 10, y = 330, width = ancho_root - 310)
 
     variables_frame_x = tk.Frame(canvas_x)
-    scrollbar_x = ttk.Scrollbar(root, orient="horizontal", command=canvas_x.xview)
-    scrollbar_x.place(x=seleccionar_var_x_label.winfo_reqwidth() + 10, y=357, width=ancho_root-310)
-    canvas_x.configure(xscrollcommand=scrollbar_x.set)
+    scrollbar_x = ttk.Scrollbar(root, orient = "horizontal", command = canvas_x.xview)
+    scrollbar_x.place(x = seleccionar_var_x_label.winfo_reqwidth() + 10, y = 357, width = ancho_root - 310)
+    canvas_x.configure(xscrollcommand = scrollbar_x.set)
 
-    variables_frame_x.bind("<Configure>", lambda e: canvas_x.configure(scrollregion=canvas_x.bbox("all")))
+    variables_frame_x.bind("<Configure>", lambda e: canvas_x.configure(scrollregion = canvas_x.bbox("all")))
 
-    canvas_x.create_window((0, 0), window=variables_frame_x, anchor="nw")
+    canvas_x.create_window((0, 0), window = variables_frame_x, anchor = "nw")
 
     
-    variables_x = {col: tk.BooleanVar(value=False) for col in columnas_numericas}
+    variables_x = {col: tk.BooleanVar(value = False) for col in columnas_numericas}
 
     for col in columnas_numericas:
-        checkbutton_x = ttk.Checkbutton(variables_frame_x, text=col, variable=variables_x[col])
-        checkbutton_x.pack(side=tk.LEFT)
+        checkbutton_x = ttk.Checkbutton(variables_frame_x, text = col, variable = variables_x[col])
+        checkbutton_x.pack(side = tk.LEFT)
+    
     return variables_x
 
-def seleccionar_y(root,columnas_numericas):
+def seleccionar_y(root, columnas_numericas):
     '''
     Muestra las variables Y y crea radio buttons para seleccionar una
  
     Parameters
     ----------
-    root: Tk
-        ventana principal de la interfaz gráfica
+    root: tk.Tk
+        ventana principal de la interfaz grafica
     columnas_numericas: list
-        dataFrame donde todas las columnas son numéricas
+        lista con el nombre de las columnas que son numericas
  
     Returns
     -------
@@ -329,37 +328,36 @@ def seleccionar_y(root,columnas_numericas):
 
     ancho_root = root.winfo_screenwidth()
 
-    seleccionar_var_y_label = tk.Label(root, text="Selecciona variable Y:")
-    seleccionar_var_y_label.place(x=10, y=370)
+    seleccionar_var_y_label = tk.Label(root, text = "Selecciona variable Y:")
+    seleccionar_var_y_label.place(x = 10, y = 370)
 
-    canvas_y = tk.Canvas(root, bd=0, highlightthickness=0)
-    canvas_y.place(x=seleccionar_var_y_label.winfo_reqwidth() + 23, y=370, width=ancho_root-310)
-
+    canvas_y = tk.Canvas(root, bd = 0, highlightthickness = 0)
+    canvas_y.place(x = seleccionar_var_y_label.winfo_reqwidth() + 23, y = 370, width = ancho_root - 310)
     variables_frame_y = tk.Frame(canvas_y)
-    scrollbar_y = ttk.Scrollbar(root, orient="horizontal", command=canvas_y.xview)
-    scrollbar_y.place(x=seleccionar_var_y_label.winfo_reqwidth() + 23, y=397, width=ancho_root-310)
-    canvas_y.configure(xscrollcommand=scrollbar_y.set)
 
-    variables_frame_y.bind("<Configure>", lambda e: canvas_y.configure(scrollregion=canvas_y.bbox("all")))
+    scrollbar_y = ttk.Scrollbar(root, orient = "horizontal", command = canvas_y.xview)
+    scrollbar_y.place(x = seleccionar_var_y_label.winfo_reqwidth() + 23, y = 397, width = ancho_root - 310)
 
-    canvas_y.create_window((0, 0), window=variables_frame_y, anchor="nw")
-
+    canvas_y.configure(xscrollcommand = scrollbar_y.set)
+    variables_frame_y.bind("<Configure>", lambda e: canvas_y.configure(scrollregion = canvas_y.bbox("all")))
+    canvas_y.create_window((0, 0), window = variables_frame_y, anchor = "nw")
     variable_y_seleccionada_radio = tk.StringVar()
-    for col in columnas_numericas:
 
-        radio_y = ttk.Radiobutton(variables_frame_y, text=col, variable=variable_y_seleccionada_radio, value=col)
-    
-        radio_y.pack(side=tk.LEFT)
+    for col in columnas_numericas:
+        radio_y = ttk.Radiobutton(variables_frame_y, text = col, variable = variable_y_seleccionada_radio, value = col)
+        radio_y.pack(side = tk.LEFT)
+
     return variable_y_seleccionada_radio
 
-def cargar_datos(root,archivo):
+def cargar_datos(root, archivo):
     '''
-    Carga datos desde un archivo y llama a otras funciones para mostrar y seleccionar variables X y la variable Y y mostrar un botón para calcular la regresión
+    Carga datos desde un archivo y llama a otras funciones para mostrar y seleccionar 
+    variables X y la variable Y y mostrar un boton para calcular la regresion
  
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
     archivo: str
         ruta del archivo seleccionado
  
@@ -370,16 +368,16 @@ def cargar_datos(root,archivo):
 
     mis_datos = leer_archivos(archivo)
 
-    ruta_archivo(root,archivo)
+    ruta_archivo(root, archivo)
 
-    crear_tabla(root,mis_datos)
+    crear_tabla(root, mis_datos)
 
-    columnas_numericas = mis_datos.select_dtypes(include='number').columns.tolist()
+    columnas_numericas = mis_datos.select_dtypes(include = 'number').columns.tolist()
     
-    variables_x=seleccionar_x(root,columnas_numericas)
-    variable_y_seleccionada_radio=seleccionar_y(root,columnas_numericas)
-    boton_calculo = tk.Button(root, text="Calcular Regresión", command= lambda: calcular_regresion_click(root,mis_datos,variables_x,variable_y_seleccionada_radio))
-    boton_calculo.place(x=100, y=415)
+    variables_x = seleccionar_x(root, columnas_numericas)
+    variable_y_seleccionada_radio = seleccionar_y(root, columnas_numericas)
+    boton_calculo = tk.Button(root, text = "Calcular Regresión", command = lambda: calcular_regresion_click(root, mis_datos, variables_x, variable_y_seleccionada_radio))
+    boton_calculo.place(x = 100, y = 415)
 
 def calcular_regresion_click(root, mis_datos, variables_x, variable_y_seleccionada_radio):
     '''
@@ -388,11 +386,11 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
     mis_datos: pd.DataFrame
-        dataFrame con la información del archivo
+        DataFrame con la información del archivo
     variables_x: dict
-        diccionario con booleanos que indican si se seleccionó o no cada variable X
+        diccionario con tk.BooleanVar que indican si se selecciono o no cada variable X
     variable_y_seleccionada_radio: tk.StringVar
         variable Y seleccionada
  
@@ -404,15 +402,17 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
     plt.close('all') 
     borrar_prediccion_label(root)
     resultado_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label) and child.winfo_y() == 415), None)
+    
     if not resultado_label:
-        resultado_label = ttk.Label(root, text="", style="Boton.TLabel")
-    resultado_label.place(x=500, y=415)
+        resultado_label = ttk.Label(root, text = "", style = "Boton.TLabel")
+    resultado_label.place(x = 500, y = 415)
+    
     try:
         x_seleccionadas = [col for col, var in variables_x.items() if var.get()]
-
         y_seleccionada = variable_y_seleccionada_radio.get()
         x, y, m, n, R = regresion_gui(mis_datos, x_seleccionadas, y_seleccionada)
         imprimir_graficas(x, y, root)
+    
     except KeyError:
         resultado_label.config(text = 'Debes seleccionar una variable Y')
         borrar_predicciones_canvas(root)
@@ -426,23 +426,23 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
         borrar_boton(root,'Calcular Predicción')
         borrar_boton(root,'Descargar Modelo')
         borrar_prediccion_label(root)
+    
     else:
         boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
-
-        resultado_label.config(text=f"Recta regresión: {formula_recta(m, n, x_seleccionadas, y_seleccionada)}, Bondad del ajuste: {R:.3f}")
+        resultado_label.config(text = f"Recta regresión: {formula_recta(m, n, x_seleccionadas, y_seleccionada)}, Bondad del ajuste: {R:.3f}")
         boton_descargar(root, m, n, R, x_seleccionadas, y_seleccionada)
 
     finally:
         resultado_label.lift()
 
-def borrar_boton(root,boton):
+def borrar_boton(root, boton):
     '''
     Elimina el boton deseado
 
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
     boton: str
         texto del boton que se desea borrar
 
@@ -462,7 +462,7 @@ def borrar_prediccion_label(root):
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica.
+        ventana principal de la interfaz grafica
 
     Returns
     -------
@@ -481,7 +481,7 @@ def regresion_gui(mis_datos, x_seleccionadas, y_seleccionada):
     Parameters
     ----------
     mis_datos: pd.DataFrame
-        dataFrame con la información del archivo
+        DataFrame con la informacion del archivo
     x_seleccionadas: list
         lista con los nombres de las variables independientes
     y_seleccionada: str
@@ -490,16 +490,17 @@ def regresion_gui(mis_datos, x_seleccionadas, y_seleccionada):
     Returns
     -------
     x: pd.Dataframe
-        dataframe con las variables X seleccionadas
+        DataFrame con las variables X seleccionadas
     y: panda.series
         variable y seleccionada
     m: list
-        lista con las pendientes de la regresión
+        lista con las pendientes de la regresion
     n: float
         ordenada en el origen
     R: float
         bondad del ajuste
     '''
+
     x = mis_datos[x_seleccionadas]
     y = mis_datos[y_seleccionada]
 
@@ -510,12 +511,12 @@ def regresion_gui(mis_datos, x_seleccionadas, y_seleccionada):
 
 def borrar_canvas_grafica(root):
     '''
-    Borra los elementos gráficos asociados a la visualización de gráficas en la interfaz
+    Borra los elementos gráficos asociados a la visualizacion de graficas en la interfaz
 
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica.
+        ventana principal de la interfaz grafica
 
     Returns
     -------
@@ -526,64 +527,62 @@ def borrar_canvas_grafica(root):
         root.canvas_fig.get_tk_widget().destroy()
         root.frame_graficas.destroy()
 
-
 def imprimir_graficas(x, y, root):
     '''
-    Imprime la regresión y crea un marco para mostrar las gráfica
+    Imprime la regresión y crea un marco para mostrar las grafica
  
     Parameters
     ----------
     x: pd.Dataframe
-        dataframe con las variables X
+        Dataframe con las variables X
     y: panda.series
         variable Y
- 
+    root: tk.Tk
+        ventana principal de la interfaz grafica
+
     Returns
     -------
     None
     '''
-    # Obtener el color de fondo de la ventana
+    
     color_fondo_ventana = root.cget('bg')
 
     borrar_canvas_grafica(root)
-
     fig = imprimir_datos(x, y)
     
     frame_graficas = tk.Frame(root)
-    frame_graficas.pack(padx=50, pady=(120, 0)) 
-    canvas_graficas = tk.Canvas(frame_graficas, bg=color_fondo_ventana, width=root.winfo_screenwidth(), height=200)  # Ajuste de altura
-    canvas_graficas.pack(side='top', fill='both', expand=True)
-    canvas_graficas.config(highlightthickness=0)  # Eliminar el borde del canvas
+    frame_graficas.pack(padx = 50, pady = (120, 0)) 
+    canvas_graficas = tk.Canvas(frame_graficas, bg = color_fondo_ventana, width = root.winfo_screenwidth(), height = 200)
+    canvas_graficas.pack(side = 'top', fill = 'both', expand = True)
+    canvas_graficas.config(highlightthickness = 0)
 
-    frame_interior = tk.Frame(canvas_graficas, bg=color_fondo_ventana)  # Ajustar el fondo al color de la ventana
-    canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
+    frame_interior = tk.Frame(canvas_graficas, bg = color_fondo_ventana)
+    canvas_graficas.create_window((0, 0), window = frame_interior, anchor='nw')
 
-    scrollbar_x_graficas = ttk.Scrollbar(frame_graficas, orient='horizontal', command=canvas_graficas.xview)
-    scrollbar_x_graficas.pack(side='bottom', fill='x')
-    canvas_graficas.configure(xscrollcommand=scrollbar_x_graficas.set)
-
-    frame_interior.bind('<Configure>', lambda e: canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all')))
-
-    canvas_graficas.create_window((0, 0), window=frame_interior, anchor='nw')
-    canvas_fig = FigureCanvasTkAgg(fig, master=frame_interior)
-    canvas_fig.draw()
-    canvas_fig.get_tk_widget().pack(side='left', fill='both', expand=True)
+    scrollbar_x_graficas = ttk.Scrollbar(frame_graficas, orient = 'horizontal', command=canvas_graficas.xview)
+    scrollbar_x_graficas.pack(side = 'bottom', fill = 'x')
     
-    # Guardar referencia a las gráficas para su eliminación posterior si es necesario
+    canvas_graficas.configure(xscrollcommand = scrollbar_x_graficas.set)
+    frame_interior.bind('<Configure>', lambda e: canvas_graficas.configure(scrollregion=canvas_graficas.bbox('all')))
+    
+    canvas_graficas.create_window((0, 0), window = frame_interior, anchor = 'nw')
+    canvas_fig = FigureCanvasTkAgg(fig, master = frame_interior)
+    canvas_fig.draw()
+    canvas_fig.get_tk_widget().pack(side = 'left', fill = 'both', expand = True)
+    
     root.canvas_fig = canvas_fig
     root.frame_graficas = frame_graficas
 
-
 def boton_descargar(root, m, n, R, x_seleccionadas, y_seleccionada):
     '''
-    Crea un botón que, al pulsarlo, guardará el modelo en un archivo
+    Crea un boton que, al pulsarlo, guarda el modelo en un archivo
  
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
     m: list
-        lista con las pendientes de la regresión
+        lista con las pendientes de la regresion
     n: float
         ordenada en el origen
     R: float
@@ -598,17 +597,17 @@ def boton_descargar(root, m, n, R, x_seleccionadas, y_seleccionada):
     None
     '''
 
-    descargar_modelo_button = tk.Button(root, text="Descargar Modelo", command=lambda: guardar_regresion(m,n,R,x_seleccionadas,y_seleccionada))
-    descargar_modelo_button.place(x=300,y=415)
-
+    descargar_modelo_button = tk.Button(root, text = "Descargar Modelo", command = lambda: guardar_regresion(m, n, R, x_seleccionadas, y_seleccionada))
+    descargar_modelo_button.place(x = 300,y = 415)
 
 def cargar_archivo(root):
     '''
     Carga un archivo seleccionado por el usuario y carga los datos
+
     Parameters
     ----------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
  
     Returns
     -------
@@ -616,9 +615,9 @@ def cargar_archivo(root):
     '''
     limpiar_interfaz()
     crear_interfaz(root)
-    archivo = filedialog.askopenfilename(filetypes=[("CSV Files", ".csv"), ("Excel Files", ".xlsx"),("DataBase Files", ".db")])
+    archivo = filedialog.askopenfilename(filetypes = [("CSV Files", ".csv"), ("Excel Files", ".xlsx"),("DataBase Files", ".db")])
     if archivo:
-        cargar_datos(root,archivo)
+        cargar_datos(root, archivo)
 
 def limpiar_interfaz():
     '''
@@ -634,7 +633,7 @@ def limpiar_interfaz():
 
 def borrar_grafica():
     '''
-    Si la ventana principal tiene un marco para las gráficas, los destruye
+    Si la ventana principal tiene un marco para las graficas, los destruye
  
     Returns
     -------
@@ -646,23 +645,21 @@ def borrar_grafica():
 
 def crear_ventana():
     '''
-    Crea la ventana de la interfaz gráfica
+    Crea la ventana de la interfaz grafica
  
     Returns
     -------
     root: tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
     '''
     
     root = tk.Tk()
     root.title("Regresion")
-    root.protocol("WM_DELETE_WINDOW",sys.exit)
+    root.protocol("WM_DELETE_WINDOW", sys.exit)
     return root
 
 if __name__=='__main__':
-    root=crear_ventana()
-
+    root = crear_ventana()
     crear_interfaz(root)
-    
     root.mainloop()
     
