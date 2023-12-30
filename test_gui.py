@@ -3,7 +3,7 @@ import tkinter as tk
 from GUI_mod import crear_ventana
 import pandas as pd
 from carga_guardado import leer_archivos 
-from GUI_mod import regresion_gui
+from GUI_mod import calcular_regresion_click
 from regresionsimplemultiple import predicciones, datos_regresion
 import os
 
@@ -41,9 +41,9 @@ def test_leer_archivos(archivo):
                            (tk.Tk(), {'longitud':tk.BooleanVar(value=False), 'latitud': tk.BooleanVar(value=False), 'habitantes': tk.BooleanVar(value=False)}, tk.StringVar(value='habitantes')), 
                            (tk.Tk(), {'longitud':tk.BooleanVar(value=True), 'latitud': tk.BooleanVar(value=False), 'habitantes': tk.BooleanVar(value=False)}, tk.StringVar())])
 
-def test_regresion_gui(root,variables_x, y_seleccionada):
+def test_calcular_regresion_click(root,variables_x, y_seleccionada):
     """
-    Prueba la función regresion_gui para asegurar que seleccionas al menos una Y y una X
+    Prueba la función calcular_regresion_click para asegurar que seleccionas al menos una Y y una X
 
     Parameters
     ----------
@@ -60,10 +60,10 @@ def test_regresion_gui(root,variables_x, y_seleccionada):
     """
 
     mis_datos = pd.DataFrame({'longitud': [1, 2, 223, 4616, 5],'latitud':[3,4,5,6,1],'habitantes':[100,30,40,1,0]})
-    resultado_label=tk.Label(root)
+    resultado_label = tk.ttk.Label(root, text="", style="Boton.TLabel")
     assert y_seleccionada.get() != '', 'Selecciona al menos una variable Y'
     assert any(var.get() for var in variables_x.values()), 'Selecciona al menos una variable X'
-    regresion_gui(mis_datos,variables_x, y_seleccionada,resultado_label)
+    calcular_regresion_click(root, mis_datos, variables_x, y_seleccionada)
 
     
 
