@@ -67,7 +67,7 @@ def cargar_modelo_click(root):
     label = ttk.Label(root, text="", style="Boton.TLabel")
     label.place(x=500, y=400)
     resultado_carga = cargar_regresion(label)
-    m, n, x_seleccionadas, y_seleccionada = resultado_carga.m, resultado_carga.n, resultado_carga.x, resultado_carga.y
+    m, n, x_seleccionadas, y_seleccionada = resultado_carga.get_m(), resultado_carga.get_n(), resultado_carga.get_x(), resultado_carga.get_y()
     boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
 
     
