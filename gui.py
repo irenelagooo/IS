@@ -404,7 +404,7 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
 
     plt.close('all') 
 
-    resultado_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label)), None)
+    resultado_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label) and child.winfo_y() == 415), None)
 
     try:
         x_seleccionadas = [col for col, var in variables_x.items() if var.get()]

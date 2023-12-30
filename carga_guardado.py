@@ -85,5 +85,7 @@ def cargar_regresion(label):
                 regresion = pickle.load(archivo)
                 label.config(text=regresion)
             except EOFError:
-                label.config(text="Objeto no encontrado en el archivo.")
+                label.config(text = 'Objeto no encontrado en el archivo')
+            except pickle.UnpicklingError:
+                label.config(text = 'El archivo seleccionado no es correcto')
         return regresion
