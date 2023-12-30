@@ -1,6 +1,5 @@
 import pytest
 import tkinter as tk
-from gui import crear_ventana
 import pandas as pd
 from carga_guardado import leer_archivos 
 from gui import calcular_regresion_click
@@ -17,7 +16,7 @@ import os
 def test_leer_archivos(archivo):
     '''
     Prueba la función leer_archivos para asegurar que la ruta del archivo o el
-    archivo existan o no estén vacíos
+    archivo existan o no esten vacios
     
     Parameters
     ----------
@@ -42,29 +41,27 @@ def test_leer_archivos(archivo):
                            (tk.Tk(), {'longitud':tk.BooleanVar(value=True), 'latitud': tk.BooleanVar(value=False), 'habitantes': tk.BooleanVar(value=False)}, tk.StringVar())])
 
 def test_calcular_regresion_click(root,variables_x, y_seleccionada):
-    """
-    Prueba la función calcular_regresion_click para asegurar que seleccionas al menos una Y y una X
+    '''
+    Prueba la funcion calcular_regresion_click para asegurar que seleccionas al menos una Y y una X
 
     Parameters
     ----------
     root : tk.Tk
-        ventana principal de la interfaz gráfica
+        ventana principal de la interfaz grafica
     variables_x: dict
-        diccionario con tk.BooleanVar que indican si se seleccionó o no cada variable X
+        diccionario con tk.BooleanVar que indican si se selecciono o no cada variable X
     y_seleccionada: tk.StringVar
         variable Y seleccionada
 
     Returns
     -------
     None
-    """
+    '''
 
-    mis_datos = pd.DataFrame({'longitud': [1, 2, 223, 4616, 5],'latitud':[3,4,5,6,1],'habitantes':[100,30,40,1,0]})
+    mis_datos = pd.DataFrame({'longitud': [1, 2, 223, 4616, 5], 'latitud':[3,4,5,6,1], 'habitantes':[100,30,40,1,0]})
     assert y_seleccionada.get() != '', 'Selecciona al menos una variable Y'
     assert any(var.get() for var in variables_x.values()), 'Selecciona al menos una variable X'
     calcular_regresion_click(root, mis_datos, variables_x, y_seleccionada)
-
-    
 
 @pytest.mark.parametrize("m, n, x", [([1.3, 2.0, 3.0], 4.0, [4.8,5.0,4.0]),
     ([2.0, 3.0, 4.0, 7.0], 4.0, ['str',3.1,6.0,9.9]),
@@ -73,7 +70,7 @@ def test_calcular_regresion_click(root,variables_x, y_seleccionada):
 def test_predicciones(m, n, x):
     '''
     Prueba la función predicciones para asegurar que los valores sean
-    valores númericos o el resultado sea numérico
+    valores numericos o el resultado sea numérico
 
     Parameters
     ----------
@@ -97,10 +94,11 @@ def test_predicciones(m, n, x):
 @pytest.mark.parametrize("X, Y", [(pd.DataFrame({'X1': [1, 2, 3], 'X2': [4, 5, 6]}), pd.Series([7, 8, 9])),
                                   (pd.DataFrame({'X1': [4, 5, 6]}), pd.Series([10, 11, 12])),
                                   (pd.DataFrame({'X1': [1, 2], 'X2': [4, 6], 'X3': [7, 9]}), pd.Series([10, 12]))])
+
 def test_datos_regresion(X, Y):
     '''
-    Prueba la función datos_regresion para asegurar que el número de pendientes y 
-    el números de variables X sea el mismo, y que la ordenada en el origen es un valor numérico
+    Prueba la funcion datos_regresion para asegurar que el numero de pendientes y 
+    el numeros de variables X sea el mismo, y que la ordenada en el origen es un valor numerico
     
     Parameters
     ----------
