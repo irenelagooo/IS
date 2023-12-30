@@ -1,10 +1,10 @@
 import pytest
 import tkinter as tk
-from GUI_mod import crear_ventana
+from gui import crear_ventana
 import pandas as pd
 from carga_guardado import leer_archivos 
-from GUI_mod import calcular_regresion_click
-from regresionsimplemultiple import predicciones, datos_regresion
+from gui import calcular_regresion_click
+from regresion import predicciones, datos_regresion
 import os
 
 @pytest.mark.parametrize("archivo", [(""),

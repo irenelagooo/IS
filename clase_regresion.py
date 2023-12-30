@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 import pickle
-from regresionsimplemultiple import formula_recta
+from regresion import formula_recta
 
 @dataclass
 class Regresion:

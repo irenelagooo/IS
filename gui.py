@@ -6,10 +6,10 @@ from tkinter import ttk, Scrollbar, filedialog, simpledialog, messagebox
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import pandas as pd
-from regresionsimplemultiple import *
-from claseRegresion import Regresion
+from regresion import *
+from clase_regresion import Regresion
 from carga_guardado import cargar_regresion,guardar_regresion,leer_archivos
-from regresionsimplemultiple import imprimir_datos
+from regresion import imprimir_datos
 import sys
 
 def crear_interfaz(root):

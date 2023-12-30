@@ -1,7 +1,7 @@
 import pandas as pd
-from regresionsimplemultiple import *
+from regresion import *
 import sqlite3
-from claseRegresion import Regresion
+from clase_regresion import Regresion
 import matplotlib.pyplot as plt
 import pickle
 import tkinter as tk
