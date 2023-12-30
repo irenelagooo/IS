@@ -94,8 +94,7 @@ def boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n):
     '''
 
     valores_x=calcular_predicciones_cuadros(root,x_seleccionadas)
-    #x=[i.get() for i in valores_x]
-    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicciones", command= lambda: calcular_predicciones_click(m,n,valores_x,y_seleccionada))
+    calcular_predicciones_btn = tk.Button(root, text="Calcular Predicción", command= lambda: calcular_predicciones_click(m,n,valores_x,y_seleccionada))
     calcular_predicciones_btn.place(x=20, y=675)
 
     
@@ -144,7 +143,7 @@ def calcular_predicciones_cuadros(root,x_seleccionadas):
         lista de nombres de variables independientes seleccionadas
 
     Returns
-    -------
+   -------
     cuadros_texto: list
         lista de cuadros de texto creados para ingresar valores
     '''
@@ -403,7 +402,7 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
     '''
 
     plt.close('all') 
-
+    borrar_prediccion_label(root)
     resultado_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label) and child.winfo_y() == 415), None)
 
     try:
@@ -414,10 +413,17 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
         imprimir_graficas(x, y, root)
     except KeyError:
         resultado_label.config(text = 'Debes seleccionar una variable Y')
-        
+        borrar_predicciones_canvas(root)
+        borrar_boton(root,'Calcular Predicción')
+        borrar_boton(root,'Descargar Modelo')
+        borrar_prediccion_label(root)
+
     except ValueError:
         resultado_label.config(text = 'Debes seleccionar al menos una variable X')
-        
+        borrar_predicciones_canvas(root)
+        borrar_boton(root,'Calcular Predicción')
+        borrar_boton(root,'Descargar Modelo')
+        borrar_prediccion_label(root)
     else:
         boton_predicciones(root, x_seleccionadas, y_seleccionada, m, n)
 
@@ -426,6 +432,45 @@ def calcular_regresion_click(root, mis_datos, variables_x, variable_y_selecciona
 
     finally:
         resultado_label.lift()
+
+def borrar_boton(root,boton):
+    '''
+    Elimina el boton deseado
+
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica
+    boton: str
+        texto del boton que se desea borrar
+
+    Returns
+    -------
+    None
+    '''
+
+    for widget in root.winfo_children():
+        if isinstance(widget, tk.Button) and widget.cget("text") == boton:
+            widget.destroy()
+
+def borrar_prediccion_label(root):
+    '''
+    Elimina el label relacionado con los resultados en la interfaz
+
+    Parameters
+    ----------
+    root: tk.Tk
+        ventana principal de la interfaz gráfica.
+
+    Returns
+    -------
+    None
+    '''
+
+    prediccion_label = next((child for child in root.winfo_children() if isinstance(child, ttk.Label) and child.winfo_y() == 675), None)
+    if prediccion_label:
+        prediccion_label.destroy()
+
 
 def regresion_gui(mis_datos, x_seleccionadas, y_seleccionada):
     '''
