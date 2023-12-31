@@ -141,7 +141,7 @@ def calcular_predicciones_cuadros(root, x_seleccionadas):
         lista de nombres de variables independientes seleccionadas
 
     Returns
-   -------
+    -------
     cuadros_texto: list
         lista de cuadros de texto creados para ingresar valores
     '''
