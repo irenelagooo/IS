@@ -18,6 +18,7 @@ class Regresion:
         lista con los nombres de las variables independientes
     _y: str
         nombre de la variable dependiente
+    
     Methods
     -------
     __init__: Inicializa una instancia de la clase Regresion
@@ -29,9 +30,10 @@ class Regresion:
     get_x: Devuelve una lista con las variables independientes
     get_y: Devuelve la variable dependiente
     '''
+
     def __init__(self, m, n, texto, bondad_del_ajuste, x, y):
         '''
-        Inicializa una instancia de la clase Regresion.
+        Inicializa una instancia de la clase Regresion
 
         Parameters
         ----------
@@ -52,6 +54,7 @@ class Regresion:
         -------
         None
         '''
+
         self._m = m
         self._n = n
         self._texto = texto
@@ -67,17 +70,19 @@ class Regresion:
         -------
         str: cadena que representa el objeto Regresion
         '''
-        return f"\nrecta: {formula_recta(self._m,self._n,self._x,self._y)}\nbondad_del_ajuste: {self._bondad_del_ajuste}\nDescripción: {self._texto}"
+
+        return f"\nrecta: {formula_recta(self._m, self._n, self._x, self._y)}\nbondad_del_ajuste: {self._bondad_del_ajuste}\nDescripción: {self._texto}"
         
     def get_m(self):
         '''
-        Devuelve una lista con las pendientes
+        Devuelve una lista con la(s) pendiente(s)
 
         Returns
         -------
         self._m: list
             valor de m
         '''
+
         return self._m
 
     def get_n(self):
@@ -89,6 +94,7 @@ class Regresion:
         self._n: float
             valor de n
         '''
+
         return self._n
 
     def get_texto(self):
@@ -98,8 +104,9 @@ class Regresion:
         Returns
         -------
         self._texto: str
-            valor de texto
+            descripcion del modelo
         '''
+
         return self._texto
 
     def get_bondad_del_ajuste(self):
@@ -109,19 +116,21 @@ class Regresion:
         Returns
         -------
         self._bondad_del_ajuste: float
-            valor de bondad_del_ajuste
+            bondad_del_ajuste del modelo
         '''
+
         return self._bondad_del_ajuste
 
     def get_x(self):
         '''
-        Devuelve una lista con las variables independientes
+        Devuelve una lista con la(s) variable(s) independiente(s)
 
         Returns
         -------
         self._x: list
             valor de x
         '''
+
         return self._x
 
     def get_y(self):
@@ -133,4 +142,5 @@ class Regresion:
         self._y: str
             valor de y
         '''
+
         return self._y
